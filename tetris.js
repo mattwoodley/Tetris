@@ -5,9 +5,11 @@ const context = canvas.getContext('2d');
 context.scale(20, 20);
 
 //chooses the colour for the background of the canvas (black)
-context.fillStyle = '#000';
+//{moved context.fillStyle to draw() function in order to wipe clean the frame before drawMatrix() is called}
+// context.fillStyle = '#000';
 //Draws a filled rectangle whose starting point is at (x, y) and whose size is specified by width and height. The fill style is determined by the current fillStyle attribute.
-context.fillRect(0, 0, canvas.width, canvas.height);
+//{moved context.fillRect to draw() function in order to wipe clean the frame before drawMatrix() is called}
+// context.fillRect(0, 0, canvas.width, canvas.height);
 
 //this matrix is a T piece
 const matrix = [
@@ -17,6 +19,9 @@ const matrix = [
 ];
 
 function draw() {
+  context.fillStyle = '#000';
+  context.fillRect(0, 0, canvas.width, canvas.height);
+  
   drawMatrix(player.matrix, player.pos);
 }
 
