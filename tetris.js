@@ -23,10 +23,36 @@ const matrix = [
   [0, 1, 0],
 ];
 
+function collide(arena, player) {
+  const [matrix, offset] = [player.matrix, player.pos];
+  for (let y = 0; y < matrix.length; y++) {
+    for (let x = 0; x < matrix[y].length; x++) {
+      if (matrix[y][x] != 0 && //if player position is not 0,0 then the player has moved and might collide
+        (arena[y + offset.y] && //if arena row doesn't exist then potential collision
+        arena[y + offset.y][x + offset.x]) !== 0) { //if arena row and column don't exist and aren't 0, then must collide
+          //return true if collision found.
+          return true;
+        }
+      }
+    }
+  //return false if no collision found.
+  return false;
+}
+
+
+function createMatrix(width, height) {
+  const matrix = [];
+  while (height--) {
+    matrix.push(new Array(width).fill(0))
+  }
+  return matrix;
+}
+
 function draw() {
   context.fillStyle = '#000';
   context.fillRect(0, 0, canvas.width, canvas.height);
 
+  drawMatrix(arena, {x: 0, y: 0});
   drawMatrix(player.matrix, player.pos);
 }
 
@@ -49,9 +75,25 @@ function drawMatrix(matrix, offset) {
   });
 }
 
+//this function merges the player's position into the arena's empty table of arrays - so all of the arena's arrays of 0s will have a tetris piece of 1s within the table after they merge.
+function merge(arena, player) {
+  player.matrix.forEach((row, y) => {
+    row.forEach((value, x) => {
+      if (value !== 0) {
+        arena[y + player.pos.y][x + player.pos.x] = value;
+      }
+    });
+  });
+}
+
 //playerDrop is the function for moving a player down 1 space.
 function playerDrop() {
   player.pos.y++;
+  if (collide(arena, player)) {
+    player.pos.y--;
+    merge(arena, player);
+    player.pos.y = 0;
+  }
   dropCounter = 0;
 }
 
@@ -63,16 +105,18 @@ let lastTime = 0;
 function update(time = 0) {
   const deltaTime = time - lastTime;
   lastTime = time;
-
   dropCounter += deltaTime;
+  //if dropCounter increases beyond 1000ms then move player position down 1 and reset dropCounter back to 0.
   if (dropCounter > dropInterval) {
-    player.pos.y++;
-    dropCounter = 0;
+    playerDrop();
   }
-
   draw();
   requestAnimationFrame(update);
 }
+
+const arena = createMatrix(12, 20);
+// console.log(arena); [Array(12) /*repeated 20 times with each array simply holding a 0*/]
+// console.table(arena); this shows the same result but in a nice table format
 
 //Player object that includes the player's position
 const player = {
