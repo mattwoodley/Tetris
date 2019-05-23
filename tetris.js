@@ -104,6 +104,30 @@ function playerMove(dir) {
   }
 }
 
+function playerRotate(dir) {
+  rotate(player.matrix, dir);
+}
+
+//rotation by transposing and then reversing.
+function rotate(matrix, dir) {
+  for (let y = 0; y < matrix.length; y++) {
+    for (let x = 0; x < y; x++) {
+      [
+        matrix[x][y],
+        matrix[y][x],
+      ] = [
+        matrix[y][x],
+        matrix[x][y],
+      ];
+    }
+  }
+  if (dir > 0) {
+    matrix.forEach(row => row.reverse());
+  } else {
+    matrix.reverse();
+  }
+}
+
 let dropCounter = 0;
 //1000 ms is 1 second, and that is what is used to determine how quickly the tetris piece drops
 let dropInterval = 1000;
@@ -146,6 +170,16 @@ document.addEventListener('keydown', event => {
   } //if down arrow key is pressed down, move tetris piece 1 position down and reset dropCounter to reset 1 second drop. This prevents a player attempting to move the piece down 1 space and accidentally moving down 2 spaces due to the dropCounter ticking to 1000ms and dropping.
     else if (event.keyCode === 40) {
       playerDrop();
+  } else if (event.keyCode === 81) {
+    playerRotate(-1);
+  } else if (event.keyCode === 69) {
+    playerRotate(1);
+  } else if (event.keyCode === 65) {
+    playerMove(-1);
+  } else if (event.keyCode === 68) {
+    playerMove(1);
+  } else if (event.keyCode === 83) {
+    playerDrop();
   }
 });
 
