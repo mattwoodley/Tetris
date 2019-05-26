@@ -104,8 +104,21 @@ function playerMove(dir) {
   }
 }
 
+//rotate tetris piece depending on direction chosen.
+//rotate collision added
 function playerRotate(dir) {
+  const pos = player.pos.x;
+  let offset = 1;
   rotate(player.matrix, dir);
+  while (collide(arena, player)) {
+    player.pos.x += offset;
+    offset = -(offset + (offset > 0 ? 1 : -1));
+    if (offset > player.matrix[0].length) {
+      rotate(player.matrix, -dir);
+      player.pos.x = pos;
+      return;
+    }
+  }
 }
 
 //rotation by transposing and then reversing.
@@ -155,6 +168,18 @@ const player = {
   matrix: matrix
 }
 
+/*
+//This logs the matrix of tetris pieces so that I can see the column arrays and row arrays of the pieces.
+console.table(player.matrix);
+console.log(player.matrix);
+console.table(player.matrix[0]);
+console.log(player.matrix[0]);
+console.log(player.matrix);
+console.log(player.matrix[0].length);
+console.log(player.matrix[1].length);
+console.log(player.matrix[2].length);
+*/
+
 //key presses on arrowkeys result in moving tetris piece.
 document.addEventListener('keydown', event => {
   //if left arrow key is pressed down, move tetris piece 1 position to the left
@@ -179,8 +204,10 @@ document.addEventListener('keydown', event => {
   } else if (event.keyCode === 68) {
     playerMove(1);
   } else if (event.keyCode === 83) {
-    playerDrop();
+      playerDrop();
   }
+  console.log(player.pos.x);
+
 });
 
 /*
