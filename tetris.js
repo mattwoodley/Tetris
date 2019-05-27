@@ -49,36 +49,36 @@ function createPiece(type) {
       [0, 1, 0, 0],
       [0, 1, 0, 0]
     ];
-  } elseif (type === 'J') {
+  } else if (type === 'J') {
     return [
       [0, 1, 0],
       [0, 1, 0],
       [1, 1, 0]
     ];
-  } elseif (type === 'L') {
+  } else if (type === 'L') {
     return [
       [0, 1, 0],
       [0, 1, 0],
       [0, 1, 1]
     ];
-  } elseif (type === 'O') {
+  } else if (type === 'O') {
     return [
       [1, 1],
       [1, 1]
     ];
-  } elseif (type === 'S') {
+  } else if (type === 'S') {
     return [
       [0, 1, 1],
       [1, 1, 0],
       [0, 0, 0]
     ];
-  } elseif (type === 'T') {
+  } else if (type === 'T') {
     return [
       [0, 0, 0],
       [1, 1, 1],
       [0, 1, 0],
     ];
-  } elseif (type === 'Z') {
+  } else if (type === 'Z') {
     return [
       [0, 1, 1],
       [1, 1, 0],
@@ -204,7 +204,7 @@ const arena = createMatrix(12, 20);
 //Player object that includes the player's position
 const player = {
   pos: {x: 5, y: 5},
-  matrix: matrix
+  matrix: createPiece('L')
 }
 
 /*
