@@ -131,7 +131,7 @@ function playerDrop() {
   if (collide(arena, player)) {
     player.pos.y--;
     merge(arena, player);
-    player.pos.y = 0;
+    playerReset();
   }
   dropCounter = 0;
 }
@@ -141,6 +141,13 @@ function playerMove(dir) {
   if (collide(arena, player)) {
     player.pos.x -= dir;
   }
+}
+
+function playerReset() {
+  const pieces = 'IJLOSTZ';
+  player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+  player.pos.y = 0;
+  player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
 }
 
 //rotate tetris piece depending on direction chosen.
@@ -204,7 +211,7 @@ const arena = createMatrix(12, 20);
 //Player object that includes the player's position
 const player = {
   pos: {x: 5, y: 5},
-  matrix: createPiece('L')
+  matrix: createPiece('Z')
 }
 
 /*
