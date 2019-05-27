@@ -16,13 +16,6 @@ context.fillStyle = '#000';
 context.fillRect(0, 0, canvas.width, canvas.height);
 */
 
-//this matrix is a T piece
-const matrix = [
-  [0, 0, 0],
-  [1, 1, 1],
-  [0, 1, 0],
-];
-
 function collide(arena, player) {
   const [matrix, offset] = [player.matrix, player.pos];
   for (let y = 0; y < matrix.length; y++) {
@@ -46,6 +39,52 @@ function createMatrix(width, height) {
     matrix.push(new Array(width).fill(0))
   }
   return matrix;
+}
+
+function createPiece(type) {
+  if (type === 'I') {
+    return [
+      [0, 1, 0, 0],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0],
+      [0, 1, 0, 0]
+    ];
+  } elseif (type === 'J') {
+    return [
+      [0, 1, 0],
+      [0, 1, 0],
+      [1, 1, 0]
+    ];
+  } elseif (type === 'L') {
+    return [
+      [0, 1, 0],
+      [0, 1, 0],
+      [0, 1, 1]
+    ];
+  } elseif (type === 'O') {
+    return [
+      [1, 1],
+      [1, 1]
+    ];
+  } elseif (type === 'S') {
+    return [
+      [0, 1, 1],
+      [1, 1, 0],
+      [0, 0, 0]
+    ];
+  } elseif (type === 'T') {
+    return [
+      [0, 0, 0],
+      [1, 1, 1],
+      [0, 1, 0],
+    ];
+  } elseif (type === 'Z') {
+    return [
+      [0, 1, 1],
+      [1, 1, 0],
+      [0, 0, 0]
+    ];
+  }
 }
 
 function draw() {
@@ -180,33 +219,33 @@ console.log(player.matrix[1].length);
 console.log(player.matrix[2].length);
 */
 
-//key presses on arrowkeys result in moving tetris piece.
+//key presses down result in moving or rotating tetris piece.
 document.addEventListener('keydown', event => {
   //if left arrow key is pressed down, move tetris piece 1 position to the left
   if (event.keyCode === 37) {
-    /*
+    /* OLD CODE
     player.pos.x--;
     //if right arrow key is pressed down, move tetris piece 1 position to the right
     //all other player position movement is then moved to a playerMove(movement) function
     */
-    playerMove(-1);
+      playerMove(-1);
   } else if (event.keyCode === 39) {
-    playerMove(1);
+      playerMove(1);
   } //if down arrow key is pressed down, move tetris piece 1 position down and reset dropCounter to reset 1 second drop. This prevents a player attempting to move the piece down 1 space and accidentally moving down 2 spaces due to the dropCounter ticking to 1000ms and dropping.
     else if (event.keyCode === 40) {
       playerDrop();
   } else if (event.keyCode === 81) {
-    playerRotate(-1);
+      playerRotate(-1);
   } else if (event.keyCode === 69) {
-    playerRotate(1);
+      playerRotate(1);
   } else if (event.keyCode === 65) {
-    playerMove(-1);
+      playerMove(-1);
   } else if (event.keyCode === 68) {
-    playerMove(1);
+      playerMove(1);
   } else if (event.keyCode === 83) {
       playerDrop();
   }
-  console.log(player.pos.x);
+  //console.log(player.pos.x); This ranges from -1 to 10 frmo left-to-right.
 
 });
 
