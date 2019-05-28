@@ -51,37 +51,37 @@ function createPiece(type) {
     ]
   } else if (type === 'J') {
     return [
-      [0, 1, 0],
-      [0, 1, 0],
-      [1, 1, 0]
+      [0, 2, 0],
+      [0, 2, 0],
+      [2, 2, 0]
     ]
   } else if (type === 'L') {
     return [
-      [0, 1, 0],
-      [0, 1, 0],
-      [0, 1, 1]
+      [0, 3, 0],
+      [0, 3, 0],
+      [0, 3, 3]
     ]
   } else if (type === 'O') {
     return [
-      [1, 1],
-      [1, 1]
+      [4, 4],
+      [4, 4]
     ]
   } else if (type === 'S') {
     return [
-      [0, 1, 1],
-      [1, 1, 0],
+      [0, 5, 5],
+      [5, 5, 0],
       [0, 0, 0]
     ]
   } else if (type === 'T') {
     return [
       [0, 0, 0],
-      [1, 1, 1],
-      [0, 1, 0],
+      [6, 6, 6],
+      [0, 6, 0],
     ]
   } else if (type === 'Z') {
     return [
-      [0, 1, 1],
-      [1, 1, 0],
+      [0, 7, 7],
+      [7, 7, 0],
       [0, 0, 0]
     ]
   }
@@ -102,7 +102,7 @@ function drawMatrix(matrix, offset) {
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0) {
-        context.fillStyle = 'red';
+        context.fillStyle = colours[value];
         context.fillRect(
           x + offset.x,
           y + offset.y,
@@ -208,6 +208,17 @@ function update(time = 0) {
   draw();
   requestAnimationFrame(update);
 }
+
+const colours = [
+  null,
+  'cyan',
+  'blue',
+  'orange',
+  'yellow',
+  'green',
+  'purple',
+  'red'
+]
 
 const arena = createMatrix(12, 20);
 // console.log(arena); [Array(12) /*repeated 20 times with each array simply holding a 0*/]
