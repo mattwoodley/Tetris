@@ -149,6 +149,10 @@ function playerReset() {
   player.matrix = createPiece(pieces[Math.floor(Math.random() * Math.floor(pieces.length))]);
   player.pos.y = 0;
   player.pos.x = (Math.floor(arena[0].length / 2)) - (Math.floor(player.matrix[0].length / 2));
+  //if collide upon a reset then the game is over and the arena is cleared of tetris pieces.
+  if (collide(arena, player)) {
+    arena.forEach(row => row.fill(0));
+  }
 }
 
 //rotate tetris piece depending on direction chosen.
