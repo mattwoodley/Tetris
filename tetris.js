@@ -48,42 +48,42 @@ function createPiece(type) {
       [0, 1, 0, 0],
       [0, 1, 0, 0],
       [0, 1, 0, 0]
-    ];
+    ]
   } else if (type === 'J') {
     return [
       [0, 1, 0],
       [0, 1, 0],
       [1, 1, 0]
-    ];
+    ]
   } else if (type === 'L') {
     return [
       [0, 1, 0],
       [0, 1, 0],
       [0, 1, 1]
-    ];
+    ]
   } else if (type === 'O') {
     return [
       [1, 1],
       [1, 1]
-    ];
+    ]
   } else if (type === 'S') {
     return [
       [0, 1, 1],
       [1, 1, 0],
       [0, 0, 0]
-    ];
+    ]
   } else if (type === 'T') {
     return [
       [0, 0, 0],
       [1, 1, 1],
       [0, 1, 0],
-    ];
+    ]
   } else if (type === 'Z') {
     return [
       [0, 1, 1],
       [1, 1, 0],
       [0, 0, 0]
-    ];
+    ]
   }
 }
 
@@ -145,6 +145,7 @@ function playerMove(dir) {
 
 function playerReset() {
   const pieces = 'IJLOSTZ';
+  console.log(`Random number: ${Math.floor(Math.random() * Math.floor(7))}`);
   player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
   player.pos.y = 0;
   player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
