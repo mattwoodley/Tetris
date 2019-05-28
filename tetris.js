@@ -143,12 +143,12 @@ function playerMove(dir) {
   }
 }
 
+//upon tetris piece being placed, playerReset() chooses a new piece at random and starts at the top of the arena.
 function playerReset() {
   const pieces = 'IJLOSTZ';
-  console.log(`Random number: ${Math.floor(Math.random() * Math.floor(7))}`);
-  player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+  player.matrix = createPiece(pieces[Math.floor(Math.random() * Math.floor(pieces.length))]);
   player.pos.y = 0;
-  player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
+  player.pos.x = (Math.floor(arena[0].length / 2)) - (Math.floor(player.matrix[0].length / 2));
 }
 
 //rotate tetris piece depending on direction chosen.
