@@ -16,6 +16,19 @@ context.fillStyle = '#000';
 context.fillRect(0, 0, canvas.width, canvas.height);
 */
 
+function arenaSweep() {
+  outer: for (let y = arena.length - 1; y > 0; y--) {
+    for (let x = 0; x < arena[y].length; x++) {
+      if (arena[y][x] === 0) {
+        continue outer;
+      }
+    }
+    const row = arena.splice(y, 1)[0].fill(0);
+    arena.unshift(row);
+    y++;
+  }
+}
+
 function collide(arena, player) {
   const [matrix, offset] = [player.matrix, player.pos];
   for (let y = 0; y < matrix.length; y++) {
@@ -80,8 +93,8 @@ function createPiece(type) {
     ]
   } else if (type === 'Z') {
     return [
-      [0, 7, 7],
       [7, 7, 0],
+      [0, 7, 7],
       [0, 0, 0]
     ]
   }
@@ -132,6 +145,7 @@ function playerDrop() {
     player.pos.y--;
     merge(arena, player);
     playerReset();
+    arenaSweep();
   }
   dropCounter = 0;
 }
