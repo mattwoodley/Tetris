@@ -17,6 +17,7 @@ context.fillRect(0, 0, canvas.width, canvas.height);
 */
 
 function arenaSweep() {
+  let rowCount = 1;
   outer: for (let y = arena.length - 1; y > 0; y--) {
     for (let x = 0; x < arena[y].length; x++) {
       if (arena[y][x] === 0) {
@@ -26,6 +27,9 @@ function arenaSweep() {
     const row = arena.splice(y, 1)[0].fill(0);
     arena.unshift(row);
     y++;
+
+    player.score += rowCount * 10;
+    rowCount *= 2;
   }
 }
 
@@ -44,7 +48,6 @@ function collide(arena, player) {
   //return false if no collision found.
   return false;
 }
-
 
 function createMatrix(width, height) {
   const matrix = [];
@@ -146,7 +149,20 @@ function playerDrop() {
     merge(arena, player);
     playerReset();
     arenaSweep();
+    updateScore();
   }
+  dropCounter = 0;
+}
+
+function playerDropAll() {
+  while (!this.collide(arena, player)) {
+    player.pos.y++;
+  }
+  player.pos.y--;
+  merge(arena, player);
+  playerReset();
+  arenaSweep();
+  updateScore();
   dropCounter = 0;
 }
 
@@ -166,21 +182,26 @@ function playerReset() {
   //if collide upon a reset then the game is over and the arena is cleared of tetris pieces.
   if (collide(arena, player)) {
     arena.forEach(row => row.fill(0));
+    player.score = 0;
+    updateScore();
   }
 }
 
-//rotate tetris piece depending on direction chosen.
-//rotate collision added
+//rotate tetris piece depending on direction chosen. Collision prevents tetris pieces from rotating into other pieces or outside of arena.
 function playerRotate(dir) {
-  const pos = player.pos.x;
-  let offset = 1;
-  rotate(player.matrix, dir);
+  const pos = player.pos.x; //Store player's X position before rotation.
+  let offset = 1; //Assign an offset to use for later.
+  rotate(player.matrix, dir); //Perform the actual matrix rotation.
+
+  //If there is a collision immediately after rotating then the rotation was illegal.
+  //But we allow rotation if the piece can fit when moved out from the wall.
   while (collide(arena, player)) {
+    //Thus we try and move the piece left/right until it no longer collides.
     player.pos.x += offset;
-    offset = -(offset + (offset > 0 ? 1 : -1));
-    if (offset > player.matrix[0].length) {
-      rotate(player.matrix, -dir);
-      player.pos.x = pos;
+    offset = -(offset + (offset > 0 ? 1 : -1)); //Produces 1, -2, 3, -4, 5 etc.
+    if (offset > player.matrix[0].length) { //If we have tried to offset more than the piece width, we deem the rotation unsuccessful.
+      rotate(player.matrix, -dir); //Reset rotation.
+      player.pos.x = pos; //Reset position.
       return;
     }
   }
@@ -223,6 +244,10 @@ function update(time = 0) {
   requestAnimationFrame(update);
 }
 
+function updateScore() {
+  document.querySelector('#score').innerText = player.score;
+}
+
 const colours = [
   null,
   'cyan',
@@ -240,8 +265,9 @@ const arena = createMatrix(12, 20);
 
 //Player object that includes the player's position
 const player = {
-  pos: {x: 5, y: 5},
-  matrix: createPiece('Z')
+  pos: {x: 0, y: 0},
+  matrix: null,
+  score: 0,
 }
 
 /*
@@ -286,6 +312,12 @@ document.addEventListener('keydown', event => {
 
 });
 
+document.addEventListener('keyup', event => {
+  if (event.keyCode === 32) {
+      playerDropAll();
+  }
+})
+
 /*
 //this logs button presses that can be used to determine player movement
 document.addEventListener('keydown', evt => {
@@ -293,4 +325,5 @@ document.addEventListener('keydown', evt => {
 })
 */
 
-update()
+playerReset();
+update();
