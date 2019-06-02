@@ -5,9 +5,16 @@ body {
   font-size: 36px;
   text-align: center;
 }
+
 canvas {
-  display: block;
+  display: grid;
+  grid-template-columns: 20% 60% 20%;
   border: 1px solid #fff;
   height: 90vh;
   margin: auto;
+}
+
+#score {
+  font-size: 42px;
+  grid-column-start: 1;
 }
