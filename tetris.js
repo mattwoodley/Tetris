@@ -307,8 +307,10 @@ document.addEventListener('keydown', event => {
       playerMove(1);
   } else if (event.keyCode === 83) {
       playerDrop();
+  } else if (event.keyCode === 38) {
+      playerRotate(1);
   }
-  //console.log(player.pos.x); This ranges from -1 to 10 frmo left-to-right.
+  //console.log(player.pos.x); This ranges from -1 to 10 from left-to-right.
 
 });
 
