@@ -16,6 +16,8 @@ context.fillStyle = '#000';
 context.fillRect(0, 0, canvas.width, canvas.height);
 */
 
+//FUNCTIONS
+
 function arenaSweep() {
   let rowCount = 1;
   outer: for (let y = arena.length - 1; y > 0; y--) {
@@ -30,7 +32,12 @@ function arenaSweep() {
 
     player.score += rowCount * 10;
     rowCount *= 2;
+    levelUp();
   }
+}
+
+function between(score, min, max) {
+  return score >= min && score <= max;
 }
 
 function collide(arena, player) {
@@ -130,6 +137,24 @@ function drawMatrix(matrix, offset) {
   });
 }
 
+function levelUp() {
+  if (between(player.score, 0, 9)) {
+    dropInterval = 1000;
+  } else if (between(player.score, 10, 19)) {
+    dropInterval = 900;
+  } else if (between(player.score, 20, 29)) {
+    dropInterval = 800;
+  } else if (between(player.score, 30, 39)) {
+    dropInterval = 700;
+  } else if (between(player.score, 40, 49)) {
+    dropInterval = 600;
+  } else if (between(player.score, 50, 59)) {
+    dropInterval = 500;
+  } else if (player.score >= 60) {
+    dropInterval = 450;
+  }
+}
+
 //this function merges the player's position into the arena's empty table of arrays - so all of the arena's arrays of 0s will have a tetris piece of 1s within the table after they merge.
 function merge(arena, player) {
   player.matrix.forEach((row, y) => {
@@ -227,9 +252,16 @@ function rotate(matrix, dir) {
   }
 }
 
+function updateScore() {
+  document.querySelector('#score').innerText = player.score;
+}
+
+//GLOBAL VARIABLES
+
 let dropCounter = 0;
 //1000 ms is 1 second, and that is what is used to determine how quickly the tetris piece drops
 let dropInterval = 1000;
+
 
 let lastTime = 0;
 function update(time = 0) {
@@ -244,9 +276,6 @@ function update(time = 0) {
   requestAnimationFrame(update);
 }
 
-function updateScore() {
-  document.querySelector('#score').innerText = player.score;
-}
 
 const colours = [
   null,
