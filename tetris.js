@@ -138,19 +138,19 @@ function drawMatrix(matrix, offset) {
 }
 
 function levelUp() {
-  if (between(player.score, 0, 9)) {
+  if (player.score >= 19) {
     dropInterval = 1000;
-  } else if (between(player.score, 10, 19)) {
+  } else if (between(player.score, 20, 49)) {
     dropInterval = 900;
-  } else if (between(player.score, 20, 29)) {
+  } else if (between(player.score, 50, 99)) {
     dropInterval = 800;
-  } else if (between(player.score, 30, 39)) {
+  } else if (between(player.score, 100, 149)) {
     dropInterval = 700;
-  } else if (between(player.score, 40, 49)) {
+  } else if (between(player.score, 150, 249)) {
     dropInterval = 600;
-  } else if (between(player.score, 50, 59)) {
+  } else if (between(player.score, 250, 399)) {
     dropInterval = 500;
-  } else if (player.score >= 60) {
+  } else if (player.score >= 400) {
     dropInterval = 450;
   }
 }
