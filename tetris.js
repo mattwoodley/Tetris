@@ -38,6 +38,7 @@ function arenaSweep() {
 
 function between(score, min, max) {
   return score >= min && score <= max;
+  console.log(score);
 }
 
 function collide(arena, player) {
@@ -137,21 +138,53 @@ function drawMatrix(matrix, offset) {
   });
 }
 
+//REAL SCORES
+// function levelUp() {
+//   if (player.score >= 19) {
+//     dropInterval = 1000;
+//   } else if (between(player.score, 20, 49)) {
+//     player.level = 2;
+//     dropInterval = 900;
+//   } else if (between(player.score, 50, 99)) {
+//     player.level = 3;
+//     dropInterval = 800;
+//   } else if (between(player.score, 100, 149)) {
+//     player.level = 4;
+//     dropInterval = 700;
+//   } else if (between(player.score, 150, 249)) {
+//     player.level = 5;
+//     dropInterval = 600;
+//   } else if (between(player.score, 250, 399)) {
+//     player.level = 6;
+//     dropInterval = 500;
+//   } else if (player.score >= 400) {
+//     player.level = 7;
+//     dropInterval = 450;
+//   }
+// }
+
+//DEV SCORE
 function levelUp() {
-  if (player.score >= 19) {
+  if (player.score <= 19) {
     dropInterval = 1000;
   } else if (between(player.score, 20, 49)) {
     dropInterval = 900;
+    player.level = 2;
   } else if (between(player.score, 50, 99)) {
     dropInterval = 800;
+    player.level = 3;
   } else if (between(player.score, 100, 149)) {
     dropInterval = 700;
+    player.level = 4;
   } else if (between(player.score, 150, 249)) {
     dropInterval = 600;
+    player.level = 5;
   } else if (between(player.score, 250, 399)) {
     dropInterval = 500;
+    player.level = 6;
   } else if (player.score >= 400) {
     dropInterval = 450;
+    player.level = 7;
   }
 }
 
@@ -175,6 +208,7 @@ function playerDrop() {
     playerReset();
     arenaSweep();
     updateScore();
+    updateLevel();
   }
   dropCounter = 0;
 }
@@ -188,6 +222,7 @@ function playerDropAll() {
   playerReset();
   arenaSweep();
   updateScore();
+  updateLevel();
   dropCounter = 0;
 }
 
@@ -209,6 +244,8 @@ function playerReset() {
     arena.forEach(row => row.fill(0));
     player.score = 0;
     updateScore();
+    player.level = 1;
+    updateLevel();
   }
 }
 
@@ -252,6 +289,10 @@ function rotate(matrix, dir) {
   }
 }
 
+function updateLevel() {
+  document.querySelector('#level').innerText = player.level;
+}
+
 function updateScore() {
   document.querySelector('#score').innerText = player.score;
 }
@@ -261,7 +302,6 @@ function updateScore() {
 let dropCounter = 0;
 //1000 ms is 1 second, and that is what is used to determine how quickly the tetris piece drops
 let dropInterval = 1000;
-
 
 let lastTime = 0;
 function update(time = 0) {
@@ -297,6 +337,7 @@ const player = {
   pos: {x: 0, y: 0},
   matrix: null,
   score: 0,
+  level: 1,
 }
 
 /*
