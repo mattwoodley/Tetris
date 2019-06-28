@@ -58,7 +58,7 @@ function collide(arena, player) {
   return false;
 }
 
-function createboard(width, height) {
+function createBoard(width, height) {
   const board = [];
   while (height--) {
     board.push(new Array(width).fill(0))
@@ -115,8 +115,8 @@ function createPiece(type) {
 function draw() {
   context.fillStyle = '#000';
   context.fillRect(0, 0, canvas.width, canvas.height);
-  context.strokeStyle = 'white';
-  context.strokeRect(0, 0, canvas.width, canvas.height);
+  // context.strokeStyle = 'white';
+  // context.strokeRect(0, 0, canvas.width, canvas.height);
 
   drawBoard(arena, {x: 0, y: 0});
   drawBoard(player.board, player.pos);
@@ -317,22 +317,6 @@ function update(time = 0) {
   }
   draw();
   requestAnimationFrame(update);
-}
-
-// squareSize = 20 pixels.
-const squareSize = 20;
-
-const row = 20;
-const column = 10;
-const vacant = 'black';
-
-
-
-function drawSquare(x, y, colour) {
-  context.fillStyle = colour;
-  context.fillRect(x*squareSize, y*squareSize, squareSize, squareSize);
-  context.strokeStyle = 'white';
-  context.strokeRect(x*squareSize, y*squareSize, squareSize, squareSize);
 }
 
 const colours = [
