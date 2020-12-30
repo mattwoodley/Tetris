@@ -19,7 +19,7 @@ context.fillRect(0, 0, canvas.width, canvas.height);
 
 //FUNCTIONS
 
-function arenaSweep() {
+const arenaSweep = () => {
   let rowCount = 1;
   outer: for (let y = arena.length - 1; y > 0; y--) {
     for (let x = 0; x < arena[y].length; x++) {
@@ -37,12 +37,11 @@ function arenaSweep() {
   }
 }
 
-function between(score, min, max) {
+const between = (score, min, max) => {
   return score >= min && score <= max;
-  console.log(score);
 }
 
-function collide(arena, player) {
+const collide = (arena, player) => {
   const [board, offset] = [player.board, player.pos];
   for (let y = 0; y < board.length; y++) {
     for (let x = 0; x < board[y].length; x++) {
@@ -58,7 +57,7 @@ function collide(arena, player) {
   return false;
 }
 
-function createBoard(width, height) {
+const createBoard = (width, height) => {
   const board = [];
   while (height--) {
     board.push(new Array(width).fill(0))
@@ -66,7 +65,7 @@ function createBoard(width, height) {
   return board;
 }
 
-function createPiece(type) {
+const createPiece = (type) => {
   if (type === 'I') {
     return [
       [0, 1, 0, 0],
@@ -112,7 +111,7 @@ function createPiece(type) {
   }
 }
 
-function draw() {
+const draw = () => {
   context.fillStyle = '#000';
   context.fillRect(0, 0, canvas.width, canvas.height);
   // context.strokeStyle = 'white';
@@ -125,7 +124,7 @@ function draw() {
 //this takes in a piece (board) and fills each 'rectangle' red
 
 //!!!offset needs more explanation!!!
-function drawBoard(board, offset) {
+const drawBoard = (board, offset) => {
   board.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0) {
@@ -141,33 +140,7 @@ function drawBoard(board, offset) {
   });
 }
 
-//REAL SCORES
-// function levelUp() {
-//   if (player.score >= 19) {
-//     dropInterval = 1000;
-//   } else if (between(player.score, 20, 49)) {
-//     player.level = 2;
-//     dropInterval = 900;
-//   } else if (between(player.score, 50, 99)) {
-//     player.level = 3;
-//     dropInterval = 800;
-//   } else if (between(player.score, 100, 149)) {
-//     player.level = 4;
-//     dropInterval = 700;
-//   } else if (between(player.score, 150, 249)) {
-//     player.level = 5;
-//     dropInterval = 600;
-//   } else if (between(player.score, 250, 399)) {
-//     player.level = 6;
-//     dropInterval = 500;
-//   } else if (player.score >= 400) {
-//     player.level = 7;
-//     dropInterval = 450;
-//   }
-// }
-
-//DEV SCORES FOR TESTING
-function levelUp() {
+const levelUp = () => {
   if (player.score <= 19) {
     dropInterval = 1000;
   } else if (between(player.score, 20, 49)) {
@@ -192,7 +165,7 @@ function levelUp() {
 }
 
 //this function merges the player's position into the arena's empty table of arrays - so all of the arena's arrays of 0s will have a tetris piece of 1s within the table after they merge.
-function merge(arena, player) {
+const merge = (arena, player) => {
   player.board.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0) {
@@ -203,7 +176,7 @@ function merge(arena, player) {
 }
 
 //playerDrop is the function for moving a player down 1 space.
-function playerDrop() {
+const playerDrop = () => {
   player.pos.y++;
   if (collide(arena, player)) {
     player.pos.y--;
@@ -216,8 +189,8 @@ function playerDrop() {
   dropCounter = 0;
 }
 
-function playerDropAll() {
-  while (!this.collide(arena, player)) {
+const playerDropAll = () => {
+  while (!collide(arena, player)) {
     player.pos.y++;
   }
   player.pos.y--;
@@ -229,7 +202,7 @@ function playerDropAll() {
   dropCounter = 0;
 }
 
-function playerMove(dir) {
+const playerMove = (dir) => {
   player.pos.x += dir;
   if (collide(arena, player)) {
     player.pos.x -= dir;
@@ -237,7 +210,7 @@ function playerMove(dir) {
 }
 
 //upon tetris piece being placed, playerReset() chooses a new piece at random and starts at the top of the arena.
-function playerReset() {
+const playerReset = () => {
   const pieces = 'IJLOSTZ';
   player.board = createPiece(pieces[Math.floor(Math.random() * Math.floor(pieces.length))]);
   player.pos.y = 0;
@@ -253,7 +226,7 @@ function playerReset() {
 }
 
 //rotate tetris piece depending on direction chosen. Collision prevents tetris pieces from rotating into other pieces or outside of arena.
-function playerRotate(dir) {
+const playerRotate = (dir) => {
   const pos = player.pos.x; //Store player's X position before rotation.
   let offset = 1; //Assign an offset to use for later.
   rotate(player.board, dir); //Perform the actual board rotation.
@@ -273,7 +246,7 @@ function playerRotate(dir) {
 }
 
 //rotation by transposing and then reversing.
-function rotate(board, dir) {
+const rotate = (board, dir) => {
   for (let y = 0; y < board.length; y++) {
     for (let x = 0; x < y; x++) {
       [
@@ -292,12 +265,12 @@ function rotate(board, dir) {
   }
 }
 
-function updateLevel() {
-  document.querySelector('#level').innerText = player.level;
+const updateLevel = () => {
+  document.querySelector('.level').innerText = `Level: ${player.level}`;
 }
 
-function updateScore() {
-  document.querySelector('#score').innerText = player.score;
+const updateScore = () => {
+  document.querySelector('.score').innerText = `Score: ${player.score}`;
 }
 
 //GLOBAL VARIABLES
@@ -307,7 +280,7 @@ let dropCounter = 0;
 let dropInterval = 1000;
 
 let lastTime = 0;
-function update(time = 0) {
+const update = (time = 0) => {
   const deltaTime = time - lastTime;
   lastTime = time;
   dropCounter += deltaTime;
@@ -357,29 +330,29 @@ console.log(player.board[2].length);
 //key presses down result in moving or rotating tetris piece.
 document.addEventListener('keydown', event => {
   //if left arrow key is pressed down, move tetris piece 1 position to the left
-  if (event.keyCode === 37) {
+  if (event.code === 'ArrowLeft') {
     /* OLD CODE
     player.pos.x--;
     //if right arrow key is pressed down, move tetris piece 1 position to the right
     //all other player position movement is then moved to a playerMove(movement) function
     */
       playerMove(-1);
-  } else if (event.keyCode === 39) {
+  } else if (event.code === 'ArrowRight') {
       playerMove(1);
   } //if down arrow key is pressed down, move tetris piece 1 position down and reset dropCounter to reset 1 second drop. This prevents a player attempting to move the piece down 1 space and accidentally moving down 2 spaces due to the dropCounter ticking to 1000ms and dropping.
-    else if (event.keyCode === 40) {
+    else if (event.code === 'ArrowDown') {
       playerDrop();
-  } else if (event.keyCode === 81) {
+  } else if (event.code === 'KeyQ') {
       playerRotate(-1);
-  } else if (event.keyCode === 69) {
+  } else if (event.code === 'KeyE') {
       playerRotate(1);
-  } else if (event.keyCode === 65) {
+  } else if (event.code === 'KeyA') {
       playerMove(-1);
-  } else if (event.keyCode === 68) {
+  } else if (event.code === 'KeyD') {
       playerMove(1);
-  } else if (event.keyCode === 83) {
+  } else if (event.code === 'KeyS') {
       playerDrop();
-  } else if (event.keyCode === 38) {
+  } else if (event.code === 'ArrowUp') {
       playerRotate(1);
   }
   //console.log(player.pos.x); This ranges from -1 to 10 from left-to-right.
@@ -387,7 +360,7 @@ document.addEventListener('keydown', event => {
 });
 
 document.addEventListener('keyup', event => {
-  if (event.keyCode === 32) {
+  if (event.code === 'Space') {
       playerDropAll();
   }
 })
@@ -396,7 +369,7 @@ document.addEventListener('keyup', event => {
 //this logs button presses that can be used to determine player movement
 document.addEventListener('keydown', evt => {
   console.log(evt);
-})
+});
 */
 
 playerReset();
