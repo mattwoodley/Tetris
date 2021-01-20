@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.querySelector('#tetris');
   const context = canvas.getContext('2d');
   const startButton = document.querySelector('.tetris__start');
+  const borderGrid = document.querySelector('.tetris__grid');
 
   //getContext allows us to use methods and access properties in JavaScript.
   //Increase size of the context within the canvas (the tetris pieces)
@@ -116,24 +117,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   const draw = () => {
-    context.fillStyle = '#000';
+    context.fillStyle = '#cffffb';
     context.fillRect(0, 0, canvas.width, canvas.height);
-    // context.strokeStyle = 'white';
-    // context.strokeRect(0, 0, canvas.width, canvas.height);
     
     drawBoard(arena, {x: 0, y: 0});
     drawBoard(player.board, player.pos);
   }
-
-  //this takes in a piece (board) and fills each 'rectangle' red
 
   //!!!offset needs more explanation!!!
   const drawBoard = (board, offset) => {
     board.forEach((row, y) => {
       row.forEach((value, x) => {
         if (value !== 0) {
+          context.strokeStyle = '#000'
+          context.lineWidth = 0.1;
           context.fillStyle = colours[value];
           context.fillRect(
+            x + offset.x,
+            y + offset.y,
+            1,
+            1
+          );
+          context.strokeRect(
             x + offset.x,
             y + offset.y,
             1,
@@ -374,7 +379,8 @@ document.addEventListener('DOMContentLoaded', () => {
   playerReset();
 
   startButton.addEventListener('click', () => {
-    startButton.classList.add('is-hidden')
+    startButton.classList.add('is-hidden');
+    borderGrid.classList.remove('is-hidden');
     update();
   });
 

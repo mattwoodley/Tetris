@@ -43,13 +43,23 @@ body {
 
 .tetris__canvas-wrapper {
   grid-area: 2 / 2 / auto / 3;
+  justify-self: center;
 }
   
 .tetris__canvas {
   display: flex;
-  height: 75vh;
-  margin: auto;
-  background-color: black;
+  box-sizing: border-box;
+  height: 560px;
+  width: 280px;
+  background-color: #cffffb;
+}
+
+.tetris__grid {
+  height: 560px;
+  width: 280px;
+  position: fixed;
+  opacity: 10%;
+  background-image: url('../img/tetris-bg--medium.png');
 }
 
 .tetris__stats {
@@ -129,6 +139,11 @@ body {
     gap: 0;
   }
 
+  .tetris__canvas {
+    height: 560px;
+    width: 280px;
+  }
+
   .tetris__title {
     font-size: 4rem;
   }
@@ -179,8 +194,13 @@ body {
     padding: 0 1rem;
 }
 
-  .tetris__canvas {
-    height: 60vh;
+  .tetris__canvas, .tetris__grid {
+    height: 400px;
+    width: 200px;
+  }
+
+  .tetris__grid {
+    background-image: url('../img/tetris-bg--small.png');
   }
 
   .tetris__controls {
