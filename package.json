@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "chai": "^4.2.0"
+    "chai": "^4.2.0",
+    "serve": "^10.0.1"
   },
   "devDependencies": {
     "mocha": "^8.2.1"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "serve"
   },
   "repository": {
     "type": "git",
