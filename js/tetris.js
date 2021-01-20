@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   context.scale(20, 20);
 
   /*
-  //chooses the colour for the background of the canvas (black)
+  //chooses the color for the background of the canvas (black)
   {moved context.fillStyle to draw() function in order to wipe clean the frame before drawBoard() is called}
   context.fillStyle = '#000';
   */
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (value !== 0) {
           context.strokeStyle = '#000'
           context.lineWidth = 0.1;
-          context.fillStyle = colours[value];
+          context.fillStyle = colors[value];
           context.fillRect(
             x + offset.x,
             y + offset.y,
@@ -309,15 +309,17 @@ document.addEventListener('DOMContentLoaded', () => {
     requestAnimationFrame(update);
   }
 
-  const colours = [
+  // colors: cyan, blue, orange, yellow, green, pink, red
+  
+  const colors = [
     null,
-    'cyan',
-    'blue',
-    'orange',
-    'yellow',
-    'green',
-    'purple',
-    'red'
+    '#00FFFF',
+    '#0084ff',
+    '#FFA500',
+    '#FFFF00',
+    '#00e800',
+    '#f200f2',
+    '#FF0000'
   ]
 
   const arena = createBoard(10, 20);

@@ -57,7 +57,7 @@ body {
 .tetris__grid {
   height: 560px;
   width: 280px;
-  position: fixed;
+  position: absolute;
   opacity: 10%;
   background-image: url('../img/tetris-bg--medium.png');
 }
