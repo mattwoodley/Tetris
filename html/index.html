@@ -20,14 +20,16 @@
           <p>E: Rotate Right</p>
           <p>S: Drop 1 Space</p>
           <p>F: Drop To Bottom</p>
+          <p>P: Pause Game</p>
       </div>
 
       <div class="tetris__canvas-wrapper">
         <button class="tetris__start">Start!</button>
+        <h6 class="tetris__paused is-hidden">Paused</h6>
         <img class="tetris__title-screen" src="../img/tetris-title-screen.png"/>
+        <img class="tetris__grey-bg is-hidden"/>
         <h6 class="tetris__game-over is-hidden">Game Over</h6>
         <button class="tetris__replay is-hidden">Play Again?</button>
-        <img class="tetris__grey-bg is-hidden"/>
         <div class="tetris__grid is-hidden"></div>
         <canvas id="tetris" class="tetris__canvas" width="200" height="400"></canvas>
       </div>

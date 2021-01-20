@@ -155,7 +155,7 @@ body {
   background-image: url('../img/tetris-bg--medium.png');
 }
 
-.tetris__game-over {
+.tetris__game-over, .tetris__paused {
   position: absolute;
   height: 54px;
   width: 280px;

@@ -5,11 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.querySelector('#tetris');
   const context = canvas.getContext('2d');
   const startButton = document.querySelector('.tetris__start');
-  const gameOverMessage = document.querySelector('.tetris__game-over');
-  const replayButton = document.querySelector('.tetris__replay');
-  const greyBg = document.querySelector('.tetris__grey-bg');
   const titleScreen = document.querySelector('.tetris__title-screen');
   const borderGrid = document.querySelector('.tetris__grid');
+  const pauseMessage = document.querySelector('.tetris__paused');
+  const greyBg = document.querySelector('.tetris__grey-bg');
+  const gameOverMessage = document.querySelector('.tetris__game-over');
+  const replayButton = document.querySelector('.tetris__replay');
 
   // getContext allows us to use methods and access properties in JavaScript.
   // Increase size of the context within the canvas (the tetris pieces)
@@ -320,13 +321,18 @@ document.addEventListener('DOMContentLoaded', () => {
   let dropInterval = 1000;
   let lastTime = 0;
 
+  let pause = false;
+
   const update = (time = 0) => {
     const deltaTime = time - lastTime;
     lastTime = time;
     dropCounter += deltaTime;
-    // if dropCounter increases beyond 1000ms then move player position down 1 and reset dropCounter back to 0.
-    if (dropCounter > dropInterval) {
-      playerDrop();
+
+    if (pause === false) {
+      // if dropCounter increases beyond 1000ms then move player position down 1 and reset dropCounter back to 0.
+      if (dropCounter > dropInterval) {
+        playerDrop();
+      }
     }
     
     if (gameOverMessage.classList.contains('is-hidden')) {
@@ -390,6 +396,15 @@ document.addEventListener('DOMContentLoaded', () => {
       if (evt.code === 'KeyF') {
         playerDropAll();
       }
+    }
+  });
+
+  document.addEventListener('keyup', evt => {
+    if (evt.code === 'KeyP') {
+      greyBg.classList.toggle('is-hidden');
+      pauseMessage.classList.toggle('is-hidden');
+      // toggle paused element
+      (pause === false) ? pause = true : pause = false;
     }
   });
   
