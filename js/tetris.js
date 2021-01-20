@@ -12,6 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const gameOverMessage = document.querySelector('.tetris__game-over');
   const replayButton = document.querySelector('.tetris__replay');
 
+  let pause = false;
+
   // getContext allows us to use methods and access properties in JavaScript.
   // Increase size of the context within the canvas (the tetris pieces)
   context.scale(20, 20);
@@ -321,8 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let dropInterval = 1000;
   let lastTime = 0;
 
-  let pause = false;
-
   const update = (time = 0) => {
     const deltaTime = time - lastTime;
     lastTime = time;
@@ -370,8 +370,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // key presses down result in moving or rotating tetris piece.
   document.addEventListener('keydown', evt => {
-    // If game is paused, don't allow input
-    if (paused === false) {
+    // If game is pause, don't allow input
+    if (pause === false) {
       // If game hasn't started or has finished, don't allow input
       if (player.board === null || !gameOverMessage.classList.contains('is-hidden')) {
         return;
@@ -392,8 +392,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('keyup', evt => {
-    // If game is paused, don't allow input
-    if (paused === false) {
+    // If game is pause, don't allow input
+    if (pause === false) {
       // If game hasn't started or has finished, don't allow input
       if (player.board === null || !gameOverMessage.classList.contains('is-hidden')) {
         return;
@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (evt.code === 'KeyP') {
       greyBg.classList.toggle('is-hidden');
       pauseMessage.classList.toggle('is-hidden');
-      // toggle paused element
+      // toggle pause element
       (pause === false) ? pause = true : pause = false;
     }
   });
