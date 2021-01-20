@@ -34,7 +34,11 @@ body {
 .tetris__controls * {
   padding: 0;
   margin: 0;
-  color: var(--mainText)
+  color: var(--mainText);
+}
+
+.tetris__controls h4 {
+  text-align: center;
 }
 
 .tetris__canvas-wrapper {
@@ -42,8 +46,10 @@ body {
 }
   
 .tetris__canvas {
+  display: flex;
   height: 75vh;
   margin: auto;
+  background-color: black;
 }
 
 .tetris__stats {
@@ -58,12 +64,20 @@ body {
   margin-top: 10rem;
 }
 
+.tetris__stats * {
+  text-align: center;
+  font-size: 3.6rem;
+  padding: 0;
+  margin: 0;
+  color: var(--mainText);
+}
+
 .tetris__intro {
   grid-area: 1 / 1 / auto / 4;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  justify-content: center;
   align-items: center;
+  text-align: center;
 }
 
 .tetris__title {
@@ -92,6 +106,20 @@ body {
 .tetris__code h6 {
   font-size: 2rem;
   margin: 0;
+}
+
+.tetris__start {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5rem;
+  padding: 2rem;
+  color: var(--mainText);
+  background-color: var(--navColor);
+  cursor: pointer;
+  font-family: 'Russo One', sans-serif;
+  text-shadow: 2px 2px var(--secondaryColor);
 }
 
 @media (max-width: 800px) {
@@ -128,6 +156,10 @@ body {
     grid-area: 4 / 1 / auto / 3;
     margin: 0 auto;
   }
+
+  .tetris__start {
+    left: 30%;
+  }
 }
 
 @media (max-width: 600px) {
@@ -162,12 +194,16 @@ body {
   
   .tetris__stats {
     grid-area: 3 / 1;
-    justify-self: center;
     margin: 0;
-    font-size: 3rem;
-    padding: 0.8rem 1rem;
     height: 11rem;
-    width: 20rem;
+  }
+
+  .tetris__stats h4 {
+    font-size: 3rem;
+  }
+
+  .tetris__start {
+    left: 50%;
   }
 
 }
