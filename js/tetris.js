@@ -20,7 +20,7 @@ context.fillRect(0, 0, canvas.width, canvas.height);
 //FUNCTIONS
 
 const arenaSweep = () => {
-  let rowCount = 1;
+  player.rowCount = 1;
   outer: for (let y = arena.length - 1; y > 0; y--) {
     for (let x = 0; x < arena[y].length; x++) {
       if (arena[y][x] === 0) {
@@ -31,8 +31,8 @@ const arenaSweep = () => {
     arena.unshift(row);
     y++;
 
-    player.score += rowCount * 10;
-    rowCount *= 2;
+    player.score += player.rowCount * 10;
+    player.rowCount *= 2;
     levelUp();
   }
 }
@@ -313,6 +313,7 @@ const player = {
   board: null,
   score: 0,
   level: 1,
+  rowCount: 0
 }
 
 /*
