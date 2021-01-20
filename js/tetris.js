@@ -1,21 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  //SELECTORS
+  // SELECTORS
 
   const canvas = document.querySelector('#tetris');
   const context = canvas.getContext('2d');
   const startButton = document.querySelector('.tetris__start');
-  const gameOver = document.querySelector('.tetris__game-over');
+  const gameOverMessage = document.querySelector('.tetris__game-over');
   const replayButton = document.querySelector('.tetris__replay');
   const greyBg = document.querySelector('.tetris__grey-bg');
   const titleScreen = document.querySelector('.tetris__title-screen');
   const borderGrid = document.querySelector('.tetris__grid');
 
-  //getContext allows us to use methods and access properties in JavaScript.
-  //Increase size of the context within the canvas (the tetris pieces)
+  // getContext allows us to use methods and access properties in JavaScript.
+  // Increase size of the context within the canvas (the tetris pieces)
   context.scale(20, 20);
 
-  //FUNCTIONS
+  // FUNCTIONS
 
   // When tetris pieces form a horizontal line, clear said line and add points
   const arenaSweep = () => {
@@ -42,19 +42,19 @@ document.addEventListener('DOMContentLoaded', () => {
     return score >= min && score <= max;
   }
 
-  const collide = (arena, player) => {
+  const collision = (arena, player) => {
     const [board, offset] = [player.board, player.pos];
     for (let y = 0; y < board.length; y++) {
       for (let x = 0; x < board[y].length; x++) {
-        if (board[y][x] != 0 && //if player position is not 0,0 then the player has moved and might collide
-          (arena[y + offset.y] && //if arena row doesn't exist then potential collision
-          arena[y + offset.y][x + offset.x]) !== 0) { //if arena row and column don't exist and aren't 0, then must collide
-          //return true if collision found.
+        if (board[y][x] != 0 && // if player position is not 0,0 then the player has moved and might collide
+          (arena[y + offset.y] && // if arena row doesn't exist then potential collision
+          arena[y + offset.y][x + offset.x]) !== 0) { // if arena row and column don't exist and aren't 0, then must collide
+          // return true if collision found.
           return true;
         }
       }
     }
-    //return false if no collision found.
+    // return false if no collision found.
     return false;
   }
   
@@ -144,6 +144,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // if placeNewPiece() triggers a collision() then the game is over.
+  // gameOver stops the board from drawing and displays the gameOverMessage and replayButton
+  const gameOver = () => {
+    gameOverMessage.classList.remove('is-hidden');
+    replayButton.classList.remove('is-hidden');
+    greyBg.classList.remove('is-hidden');
+    replayGame();
+  }
+
   const levelUp = () => {
     if (player.score <= 19) {
       dropInterval = 1000;
@@ -168,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  //this function merges the player's position into the arena's empty table of arrays - so all of the arena's arrays of 0s will have tetrimino pieces of 1s, 2s, 3s etc.
+  // this function merges the player's position into the arena's empty table of arrays - so all of the arena's arrays of 0s will have tetrimino pieces of 1s, 2s, 3s etc.
   const merge = (arena, player) => {
     player.board.forEach((row, y) => {
       row.forEach((value, x) => {
@@ -179,104 +188,100 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  //playerDrop is the function for moving a player down 1 space.
-  const playerDrop = () => {
-    player.pos.y++;
-    if (collide(arena, player)) {
-      player.pos.y--;
-      merge(arena, player);
-      playerReset();
-      arenaSweep();
-      updateLevel();
-      updateScore();
-      updateLines();
-    }
-    dropCounter = 0;
-  }
-
-  const playerDropAll = () => {
-    while (!collide(arena, player)) {
-      player.pos.y++;
-    }
-    player.pos.y--;
-    merge(arena, player);
-    playerReset();
-    arenaSweep();
-    updateLevel();
-    updateScore();
-    updateLines();
-    dropCounter = 0;
-  }
-
-  const playerMove = (dir) => {
-    player.pos.x += dir;
-    if (collide(arena, player)) {
-      player.pos.x -= dir;
-    }
-  }
-
-  //upon tetris piece being placed, playerReset() chooses a new piece at random and starts at the top of the arena.
-  const playerReset = () => {
+  // upon tetris piece being placed, placeNewPiece() chooses a new piece at random and places it at the top of the arena.
+  const placeNewPiece = () => {
     const pieces = 'IJLOSTZ';
     player.board = createPiece(pieces[Math.floor(Math.random() * Math.floor(pieces.length))]);
     player.pos.y = 0;
     player.pos.x = (Math.floor(arena[0].length / 2)) - (Math.floor(player.board[0].length / 2));
     
-    //if collide upon a reset then the game is over and the arena is cleared of tetris pieces.
-    if (collide(arena, player)) {
-
-      // Game Over Message
-      gameOver.classList.remove('is-hidden');
-      replayButton.classList.remove('is-hidden');
-      greyBg.classList.remove('is-hidden');
-
-      replayButton.addEventListener('click', () => {
-        gameOver.classList.add('is-hidden');
-        replayButton.classList.add('is-hidden');
-        greyBg.classList.add('is-hidden');
-
-        // Reset player stats
-        player.level = 1;
-        updateLevel();
-        player.score = 0;
-        updateScore();
-        player.lines = 0;
-        updateLines();
-        
-        draw();
-        requestAnimationFrame(update);
-      });
-      
-      // Reset arena
-      if (gameOver.classList.contains('is-hidden')) {
-        return;
-      } else {
-        arena.forEach(row => row.fill(0));
-      }
+    // if collision during placeNewPiece() then the game is over, the arena is cleared of tetris pieces and the player's stats are reset.
+    if (collision(arena, player)) {
+      gameOver();
     }
   }
 
-  //rotate tetris piece depending on direction chosen. Collision prevents tetris pieces from rotating into other pieces or outside of arena.
+  // playerDrop is the function for moving a player down 1 space.
+  const playerDrop = () => {
+    player.pos.y++;
+    if (collision(arena, player)) {
+      player.pos.y--;
+      merge(arena, player);
+      placeNewPiece();
+      arenaSweep();
+      updateStat('level', player.level);
+      updateStat('score', player.score);
+      updateStat('lines', player.lines);
+    }
+    dropCounter = 0;
+  }
+
+  const playerDropAll = () => {
+    while (!collision(arena, player)) {
+      player.pos.y++;
+    }
+    player.pos.y--;
+    merge(arena, player);
+    placeNewPiece();
+    arenaSweep();
+    updateStat('level', player.level);
+    updateStat('score', player.score);
+    updateStat('lines', player.lines);
+    dropCounter = 0;
+  }
+
+  const playerMove = (dir) => {
+    player.pos.x += dir;
+    if (collision(arena, player)) {
+      player.pos.x -= dir;
+    }
+  }
+  
+  // rotate tetris piece depending on direction chosen. Collision() prevents tetris pieces from rotating into other pieces or outside of arena.
   const playerRotate = (dir) => {
-    const pos = player.pos.x; //Store player's X position before rotation.
-    let offset = 1; //Assign an offset to use for later.
-    rotate(player.board, dir); //Perform the actual board rotation.
+    const pos = player.pos.x; // Store player's X position before rotation.
+    let offset = 1;
+    rotate(player.board, dir); // Perform the piece rotation.
 
-    //If there is a collision immediately after rotating then the rotation was illegal.
-    //But we allow rotation if the piece can fit when moved out from the wall.
-    while (collide(arena, player)) {
-      //Thus we try and move the piece left/right until it no longer collides.
+    // If there is a collision immediately after rotating then the rotation is illegal.
+    // But allow rotation if the piece can fit when moved out from the wall.
+    while (collision(arena, player)) {
       player.pos.x += offset;
-      offset = -(offset + (offset > 0 ? 1 : -1)); //Produces 1, -2, 3, -4, 5 etc.
-      if (offset > player.board[0].length) { //If we have tried to offset more than the piece width, we deem the rotation unsuccessful.
-        rotate(player.board, -dir); //Reset rotation.
-        player.pos.x = pos; //Reset position.
+      offset = -(offset + (offset > 0 ? 1 : -1)); // Produces 1, -2, 3, -4, 5 etc. to move the piece back away from the wall
+      if (offset > player.board[0].length) { // If we have tried to offset more than the piece width, the rotation is unsuccessful.
+        rotate(player.board, -dir); // Reset rotation.
+        player.pos.x = pos; // Reset position.
         return;
       }
     }
   }
 
-  //rotation by transposing and then reversing.
+  const replayGame = () => {
+    replayButton.addEventListener('click', () => {
+      gameOverMessage.classList.add('is-hidden');
+      replayButton.classList.add('is-hidden');
+      greyBg.classList.add('is-hidden');
+
+      // Clear the arena of tetris pieces
+      arena.forEach(row => row.fill(0));
+
+      resetStats();
+      draw();
+      requestAnimationFrame(update);
+    });
+  }
+
+  // Reset player stats
+  const resetStats = () => {
+    player.level = 1;
+    updateStat('level', player.level);
+    player.score = 0;
+    updateStat('score', player.score);
+    player.lines = 0;
+    updateStat('lines', player.lines);
+  }
+
+  // rotation by transposing and then reversing.
   const rotate = (board, dir) => {
     for (let y = 0; y < board.length; y++) {
       for (let x = 0; x < y; x++) {
@@ -300,23 +305,15 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton.classList.add('is-hidden');
     titleScreen.classList.add('is-hidden');
     borderGrid.classList.remove('is-hidden');
-    playerReset();
+    placeNewPiece();
     update();
   }
 
-  const updateLevel = () => {
-    document.querySelector('.tetris__level').textContent = `Level: ${player.level}`;
+  const updateStat = (cssClass, stat) => {
+    document.querySelector(`.tetris__${cssClass.toString()}`).textContent = `${cssClass}: ${stat}`;
   }
 
-  const updateScore = () => {
-    document.querySelector('.tetris__score').textContent = `Score: ${player.score}`;
-  }
-
-  const updateLines = () => {
-    document.querySelector('.tetris__lines').textContent = `Lines: ${player.lines}`;
-  }
-
-  //GLOBAL VARIABLES
+  // GLOBAL VARIABLES
 
   let dropCounter = 0;
   // 1000 ms is 1 second, and that is what is used to determine how quickly the tetris piece drops
@@ -332,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
       playerDrop();
     }
     
-    if (gameOver.classList.contains('is-hidden')) {
+    if (gameOverMessage.classList.contains('is-hidden')) {
       draw();
       requestAnimationFrame(update);
     }
@@ -365,10 +362,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // EVENT LISTENERS
 
-  //key presses down result in moving or rotating tetris piece.
+  // key presses down result in moving or rotating tetris piece.
   document.addEventListener('keydown', evt => {
     // If game hasn't started or has finished, don't allow input
-    if (player.board === null || !gameOver.classList.contains('is-hidden')) {
+    if (player.board === null || !gameOverMessage.classList.contains('is-hidden')) {
       return;
     } else {
       if (evt.code === 'KeyQ') {
@@ -387,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('keyup', evt => {
     // If game hasn't started or has finished, don't allow input
-    if (player.board === null || !gameOver.classList.contains('is-hidden')) {
+    if (player.board === null || !gameOverMessage.classList.contains('is-hidden')) {
       return;
     } else {
       if (evt.code === 'KeyF') {
