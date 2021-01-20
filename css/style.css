@@ -18,7 +18,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 7rem 1fr 5rem;
-  margin: 7rem 0 2rem 0;
+  margin: 9rem 0 4rem 0;
   background-color: var(--secondaryColor);
   gap: 1rem;
 }
@@ -115,45 +115,87 @@ body {
   margin: 0;
 }
 
-.tetris__start {
+.tetris__start, .tetris__replay {
   position: absolute;
-  z-index: 1;
+  z-index: 2;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 5rem;
-  padding: 2rem;
-  color: var(--mainText);
-  background-color: var(--navColor);
+  font-size: 5.1rem;
+  padding: 1rem;
+  color: #fff;
   cursor: pointer;
   font-family: 'Russo One', sans-serif;
-  text-shadow: 2px 2px var(--secondaryColor);
+  text-shadow: 0 4px rgb(0, 0, 0);
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 3px 3px #000;
+
+  background: rgb(0,0,0);
+  background: -moz-linear-gradient(0deg, rgba(0,0,0,0.6473317865429234) 19%, rgba(91,91,91,0.6496519721577726) 63%, rgba(180,180,180,0.6519721577726219) 100%);
+  background: -webkit-linear-gradient(0deg, rgba(0,0,0,0.6473317865429234) 19%, rgba(91,91,91,0.6496519721577726) 63%, rgba(180,180,180,0.6519721577726219) 100%);
+  background: linear-gradient(0deg, rgba(0,0,0,0.6473317865429234) 19%, rgba(91,91,91,0.6496519721577726) 63%, rgba(180,180,180,0.6519721577726219) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#b4b4b4",GradientType=1); 
 }
 
-.tetris__title-screen {
+.tetris__replay {
+  top: 80%;
+  font-size: 3rem;
+  width: 80%;
+}
+
+.tetris__start:hover, .tetris__replay:hover {
+  background: rgb(0,0,0);
+  background: -moz-linear-gradient(0deg, rgba(0,0,0,0.8491879350348028) 19%, rgba(91,91,91,0.851508120649652) 63%, rgba(180,180,180,0.8491879350348028) 100%);
+  background: -webkit-linear-gradient(0deg, rgba(0,0,0,0.8491879350348028) 19%, rgba(91,91,91,0.851508120649652) 63%, rgba(180,180,180,0.8491879350348028) 100%);
+  background: linear-gradient(0deg, rgba(0,0,0,0.8491879350348028) 19%, rgba(91,91,91,0.851508120649652) 63%, rgba(180,180,180,0.8491879350348028) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#b4b4b4",GradientType=1); }
+
+.tetris__grid, .tetris__title-screen, .tetris__grey-bg {
   height: 560px;
   width: 280px;
   position: absolute;
 }
 
 .tetris__grid {
-  height: 560px;
-  width: 280px;
-  position: absolute;
   opacity: 10%;
   background-image: url('../img/tetris-bg--medium.png');
+}
+
+.tetris__game-over {
+  position: absolute;
+  height: 54px;
+  width: 280px;
+  z-index: 2;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4.5rem;
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  color: #fff;
+  font-family: 'Russo One', sans-serif;
+  text-shadow: 0 4px rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.tetris__game-over:hover {
+  cursor: default;
+}
+
+.tetris__grey-bg {
+  z-index: 1;
+  background-color:#808080;
+  opacity: 0.5;
 }
 
 @media (max-width: 800px) {
   .tetris {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 7rem 0.5fr 0.5fr 5rem;
+    margin: 11rem 0 4rem 0;
     gap: 0;
-  }
-
-  .tetris__canvas {
-    height: 560px;
-    width: 280px;
   }
 
   .tetris__title {
@@ -203,7 +245,7 @@ body {
     padding: 0 1rem;
 }
 
-  .tetris__canvas, .tetris__grid {
+  .tetris__canvas, .tetris__grid, .tetris__title-screen, .tetris__grey-bg {
     height: 400px;
     width: 200px;
   }
@@ -212,9 +254,17 @@ body {
     background-image: url('../img/tetris-bg--small.png');
   }
 
-  .tetris__title-screen {
-    height: 400px;
+  .tetris__game-over {
+    position: absolute;
+    height: 44px;
     width: 200px;
+    font-size: 3.5rem;
+  }
+
+  .tetris__replay {
+    top: 80%;
+    font-size: 2.6rem;
+    width: 90%;
   }
 
   .tetris__controls {
