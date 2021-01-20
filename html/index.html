@@ -4,6 +4,9 @@
     <title>Tetris</title>
     <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://kit.fontawesome.com/60f46e1e01.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&family=Russo+One&display=swap" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
   </head>
   <body>
@@ -21,10 +24,10 @@
 
       <div class="tetris__canvas-wrapper">
         <button class="tetris__start">Start!</button>
-        <img class="tetris__grey-bg is-hidden"/>
+        <img class="tetris__title-screen" src="../img/tetris-title-screen.png"/>
         <h6 class="tetris__game-over is-hidden">Game Over</h6>
         <button class="tetris__replay is-hidden">Play Again?</button>
-        <img class="tetris__title-screen" src="./img/tetris-title-screen.png"/>
+        <img class="tetris__grey-bg is-hidden"/>
         <div class="tetris__grid is-hidden"></div>
         <canvas id="tetris" class="tetris__canvas" width="200" height="400"></canvas>
       </div>
