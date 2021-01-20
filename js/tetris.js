@@ -1,8 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+  //SELECTORS
+
   const canvas = document.querySelector('#tetris');
   const context = canvas.getContext('2d');
   const startButton = document.querySelector('.tetris__start');
+  const gameOver = document.querySelector('.tetris__game-over');
+  const replayButton = document.querySelector('.tetris__replay');
+  const greyBg = document.querySelector('.tetris__grey-bg');
   const titleScreen = document.querySelector('.tetris__title-screen');
   const borderGrid = document.querySelector('.tetris__grid');
 
@@ -10,20 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
   //Increase size of the context within the canvas (the tetris pieces)
   context.scale(20, 20);
 
-  /*
-  //chooses the color for the background of the canvas (black)
-  {moved context.fillStyle to draw() function in order to wipe clean the frame before drawBoard() is called}
-  context.fillStyle = '#000';
-  */
-
-  /*
-  //Draws a filled rectangle whose starting point is at (x, y) and whose size is specified by width and height. The fill style is determined by the current fillStyle attribute.
-  {moved context.fillRect to draw() function in order to wipe clean the frame before drawBoard() is called}
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  */
-
   //FUNCTIONS
 
+  // When tetris pieces form a horizontal line, clear said line and add points
   const arenaSweep = () => {
     let lines = 1;
     outer: for (let y = arena.length - 1; y > 0; y--) {
@@ -32,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
           continue outer;
         }
       }
+      // remove the completed line
       const row = arena.splice(y, 1)[0].fill(0);
       arena.unshift(row);
       y++;
@@ -58,9 +53,9 @@ document.addEventListener('DOMContentLoaded', () => {
           return true;
         }
       }
-        }
-        //return false if no collision found.
-      return false;
+    }
+    //return false if no collision found.
+    return false;
   }
   
   const createBoard = (width, height) => {
@@ -125,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
     drawBoard(player.board, player.pos);
   }
 
-  //!!!offset needs more explanation!!!
   const drawBoard = (board, offset) => {
     board.forEach((row, y) => {
       row.forEach((value, x) => {
@@ -174,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  //this function merges the player's position into the arena's empty table of arrays - so all of the arena's arrays of 0s will have a tetris piece of 1s within the table after they merge.
+  //this function merges the player's position into the arena's empty table of arrays - so all of the arena's arrays of 0s will have tetrimino pieces of 1s, 2s, 3s etc.
   const merge = (arena, player) => {
     player.board.forEach((row, y) => {
       row.forEach((value, x) => {
@@ -227,15 +221,38 @@ document.addEventListener('DOMContentLoaded', () => {
     player.board = createPiece(pieces[Math.floor(Math.random() * Math.floor(pieces.length))]);
     player.pos.y = 0;
     player.pos.x = (Math.floor(arena[0].length / 2)) - (Math.floor(player.board[0].length / 2));
+    
     //if collide upon a reset then the game is over and the arena is cleared of tetris pieces.
     if (collide(arena, player)) {
-      arena.forEach(row => row.fill(0));
-      player.level = 1;
-      updateLevel();
-      player.score = 0;
-      updateScore();
-      player.lines = 0;
-      updateLines();
+
+      // Game Over Message
+      gameOver.classList.remove('is-hidden');
+      replayButton.classList.remove('is-hidden');
+      greyBg.classList.remove('is-hidden');
+
+      replayButton.addEventListener('click', () => {
+        gameOver.classList.add('is-hidden');
+        replayButton.classList.add('is-hidden');
+        greyBg.classList.add('is-hidden');
+
+        // Reset player stats
+        player.level = 1;
+        updateLevel();
+        player.score = 0;
+        updateScore();
+        player.lines = 0;
+        updateLines();
+        
+        draw();
+        requestAnimationFrame(update);
+      });
+      
+      // Reset arena
+      if (gameOver.classList.contains('is-hidden')) {
+        return;
+      } else {
+        arena.forEach(row => row.fill(0));
+      }
     }
   }
 
@@ -279,6 +296,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  const startGame = () => {
+    startButton.classList.add('is-hidden');
+    titleScreen.classList.add('is-hidden');
+    borderGrid.classList.remove('is-hidden');
+    playerReset();
+    update();
+  }
+
   const updateLevel = () => {
     document.querySelector('.tetris__level').textContent = `Level: ${player.level}`;
   }
@@ -294,24 +319,26 @@ document.addEventListener('DOMContentLoaded', () => {
   //GLOBAL VARIABLES
 
   let dropCounter = 0;
-  //1000 ms is 1 second, and that is what is used to determine how quickly the tetris piece drops
+  // 1000 ms is 1 second, and that is what is used to determine how quickly the tetris piece drops
   let dropInterval = 1000;
-
   let lastTime = 0;
+
   const update = (time = 0) => {
     const deltaTime = time - lastTime;
     lastTime = time;
     dropCounter += deltaTime;
-    //if dropCounter increases beyond 1000ms then move player position down 1 and reset dropCounter back to 0.
+    // if dropCounter increases beyond 1000ms then move player position down 1 and reset dropCounter back to 0.
     if (dropCounter > dropInterval) {
       playerDrop();
     }
-    draw();
-    requestAnimationFrame(update);
+    
+    if (gameOver.classList.contains('is-hidden')) {
+      draw();
+      requestAnimationFrame(update);
+    }
   }
 
   // colors: cyan, blue, orange, yellow, green, pink, red
-  
   const colors = [
     null,
     '#00FFFF',
@@ -327,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // console.log(arena); [Array(10) /*repeated 20 times with each array simply holding a 0*/]
   // console.table(arena); this shows the same result but in a nice table format
 
-  //Player object that includes the player's position
+  // Player object that includes the player's position
   const player = {
     pos: {x: 0, y: 0},
     board: null,
@@ -336,56 +363,41 @@ document.addEventListener('DOMContentLoaded', () => {
     lines: 0
   }
 
-  /*
-  //This logs the board of tetris pieces so that I can see the column arrays and row arrays of the pieces.
-  console.table(player.board);
-  console.log(player.board);
-  console.table(player.board[0]);
-  console.log(player.board[0]);
-  console.log(player.board);
-  console.log(player.board[0].length);
-  console.log(player.board[1].length);
-  console.log(player.board[2].length);
-  */
+  // EVENT LISTENERS
 
   //key presses down result in moving or rotating tetris piece.
-  document.addEventListener('keydown', event => {
-    //if left arrow key is pressed down, move tetris piece 1 position to the left
-    if (event.code === 'KeyQ') {
-        playerRotate(-1);
-    } else if (event.code === 'KeyE') {
-        playerRotate(1);
-    } else if (event.code === 'KeyA') {
-        playerMove(-1);
-    } else if (event.code === 'KeyD') {
-        playerMove(1);
-    } else if (event.code === 'KeyS') {
-        playerDrop();
-    }
-    //console.log(player.pos.x); This ranges from -1 to 10 from left-to-right.
-
-  });
-
-  document.addEventListener('keyup', event => {
-    if (event.code === 'KeyF') {
-        playerDropAll();
-    }
-  });
-
-  /*
-  //this logs button presses that can be used to determine player movement
   document.addEventListener('keydown', evt => {
-    console.log(evt);
+    // If game hasn't started or has finished, don't allow input
+    if (player.board === null || !gameOver.classList.contains('is-hidden')) {
+      return;
+    } else {
+      if (evt.code === 'KeyQ') {
+        playerRotate(-1);
+      } else if (evt.code === 'KeyE') {
+        playerRotate(1);
+      } else if (evt.code === 'KeyA') {
+        playerMove(-1);
+      } else if (evt.code === 'KeyD') {
+        playerMove(1);
+      } else if (evt.code === 'KeyS') {
+        playerDrop();
+      }
+    }
   });
-  */
 
-  playerReset();
-
+  document.addEventListener('keyup', evt => {
+    // If game hasn't started or has finished, don't allow input
+    if (player.board === null || !gameOver.classList.contains('is-hidden')) {
+      return;
+    } else {
+      if (evt.code === 'KeyF') {
+        playerDropAll();
+      }
+    }
+  });
+  
   startButton.addEventListener('click', () => {
-    startButton.classList.add('is-hidden');
-    titleScreen.classList.add('is-hidden');
-    borderGrid.classList.remove('is-hidden');
-    update();
+    startGame()
   });
 
 });
