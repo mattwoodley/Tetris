@@ -73,7 +73,8 @@ body {
 }
 
 .tetris__stats * {
-  text-align: center;
+  text-align: left;
+  text-transform: capitalize;
   font-size: 3.6rem;
   padding: 0;
   margin: 0;
