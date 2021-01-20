@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.querySelector('#tetris');
   const context = canvas.getContext('2d');
   const startButton = document.querySelector('.tetris__start');
+  const titleScreen = document.querySelector('.tetris__title-screen');
   const borderGrid = document.querySelector('.tetris__grid');
 
   //getContext allows us to use methods and access properties in JavaScript.
@@ -382,6 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   startButton.addEventListener('click', () => {
     startButton.classList.add('is-hidden');
+    titleScreen.classList.add('is-hidden');
     borderGrid.classList.remove('is-hidden');
     update();
   });

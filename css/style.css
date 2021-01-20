@@ -10,6 +10,10 @@ body {
   text-align: center;
 }
 
+.is-hidden {
+  display: none;
+}
+
 .tetris {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -44,6 +48,7 @@ body {
 .tetris__canvas-wrapper {
   grid-area: 2 / 2 / auto / 3;
   justify-self: center;
+  position: relative;
 }
   
 .tetris__canvas {
@@ -52,14 +57,6 @@ body {
   height: 560px;
   width: 280px;
   background-color: #cffffb;
-}
-
-.tetris__grid {
-  height: 560px;
-  width: 280px;
-  position: absolute;
-  opacity: 10%;
-  background-image: url('../img/tetris-bg--medium.png');
 }
 
 .tetris__stats {
@@ -120,6 +117,7 @@ body {
 
 .tetris__start {
   position: absolute;
+  z-index: 1;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -130,6 +128,20 @@ body {
   cursor: pointer;
   font-family: 'Russo One', sans-serif;
   text-shadow: 2px 2px var(--secondaryColor);
+}
+
+.tetris__title-screen {
+  height: 560px;
+  width: 280px;
+  position: absolute;
+}
+
+.tetris__grid {
+  height: 560px;
+  width: 280px;
+  position: absolute;
+  opacity: 10%;
+  background-image: url('../img/tetris-bg--medium.png');
 }
 
 @media (max-width: 800px) {
@@ -172,15 +184,12 @@ body {
     margin: 0 auto;
   }
 
-  .tetris__start {
-    left: 30%;
-  }
 }
 
 @media (max-width: 600px) {
   .tetris {
     grid-template-columns: 1fr;
-    grid-template-rows: 7rem 1fr 13rem 4rem;
+    grid-template-rows: 7rem 1fr 10rem 4rem;
     align-content: center;
     gap: 0.5rem;
   }
@@ -203,6 +212,11 @@ body {
     background-image: url('../img/tetris-bg--small.png');
   }
 
+  .tetris__title-screen {
+    height: 400px;
+    width: 200px;
+  }
+
   .tetris__controls {
     display: none;
   }  
@@ -215,11 +229,12 @@ body {
   .tetris__stats {
     grid-area: 3 / 1;
     margin: 0;
-    height: 11rem;
+    width: 12rem;
+    height: 8rem;
   }
 
   .tetris__stats h4 {
-    font-size: 3rem;
+    font-size: 2rem;
   }
 
   .tetris__start {
