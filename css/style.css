@@ -155,7 +155,7 @@ body {
   background-image: url('../img/tetris-bg--medium.png');
 }
 
-.tetris__game-over, .tetris__paused {
+.tetris__game-over, .tetris__pause {
   position: absolute;
   height: 54px;
   width: 280px;
@@ -238,7 +238,7 @@ body {
     background-image: url('../img/tetris-bg--small.png');
   }
 
-  .tetris__game-over {
+  .tetris__game-over, .tetris__pause {
     position: absolute;
     height: 44px;
     width: 200px;
