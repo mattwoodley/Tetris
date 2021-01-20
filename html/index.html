@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <title>Tetris</title>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://kit.fontawesome.com/60f46e1e01.js" crossorigin="anonymous"></script>
+    <link href="../css/style.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="tetris">
+
+      <div class="tetris__controls">
+          <h4>Controls</h4>
+          <p>A: Move Left</p>
+          <p>D: Move Right</p>
+          <p>Q: Rotate Left</p>
+          <p>E: Rotate Right</p>
+          <p>S: Drop 1 Space</p>
+          <p>F: Drop To Bottom</p>
+      </div>
+    
+      <div class="tetris__canvas-wrapper">
+          <canvas id="tetris" class="tetris__canvas" width="200" height="400"></canvas>
+      </div>
+    
+      <div class="tetris__stats">
+          <div class="tetris__level">Level: 1</div>
+          <div class="tetris__score">Score: 0</div>
+      </div>
+
+      <div class="tetris__code">
+        <a class="a-github" target="_blank" href="https://github.com/mattwoodley/tetris"><h6><i class="fab fa-github"></i> Code</h6></a>
+      </div>
+    
+    </div>
+
+    <script src="../js/tetris.js"></script>
+  </body>
+</html>
+
+
