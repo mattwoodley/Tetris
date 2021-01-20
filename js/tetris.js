@@ -370,31 +370,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // key presses down result in moving or rotating tetris piece.
   document.addEventListener('keydown', evt => {
-    // If game hasn't started or has finished, don't allow input
-    if (player.board === null || !gameOverMessage.classList.contains('is-hidden')) {
-      return;
-    } else {
-      if (evt.code === 'KeyQ') {
-        playerRotate(-1);
-      } else if (evt.code === 'KeyE') {
-        playerRotate(1);
-      } else if (evt.code === 'KeyA') {
-        playerMove(-1);
-      } else if (evt.code === 'KeyD') {
-        playerMove(1);
-      } else if (evt.code === 'KeyS') {
-        playerDrop();
+    // If game is paused, don't allow input
+    if (paused === false) {
+      // If game hasn't started or has finished, don't allow input
+      if (player.board === null || !gameOverMessage.classList.contains('is-hidden')) {
+        return;
+      } else {
+        if (evt.code === 'KeyQ') {
+          playerRotate(-1);
+        } else if (evt.code === 'KeyE') {
+          playerRotate(1);
+        } else if (evt.code === 'KeyA') {
+          playerMove(-1);
+        } else if (evt.code === 'KeyD') {
+          playerMove(1);
+        } else if (evt.code === 'KeyS') {
+          playerDrop();
+        }
       }
     }
   });
 
   document.addEventListener('keyup', evt => {
-    // If game hasn't started or has finished, don't allow input
-    if (player.board === null || !gameOverMessage.classList.contains('is-hidden')) {
-      return;
-    } else {
-      if (evt.code === 'KeyF') {
-        playerDropAll();
+    // If game is paused, don't allow input
+    if (paused === false) {
+      // If game hasn't started or has finished, don't allow input
+      if (player.board === null || !gameOverMessage.classList.contains('is-hidden')) {
+        return;
+      } else {
+        if (evt.code === 'KeyF') {
+          playerDropAll();
+        }
       }
     }
   });
