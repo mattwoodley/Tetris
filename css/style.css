@@ -3,12 +3,11 @@ html {
 }
 
 body {
+  background-color: #202028;
   color: #fff;
   font-family: sans-serif;
   font-size: 3.6rem;
   text-align: center;
-  padding: 0;
-  margin: 0;
 }
 
 .is-hidden {
@@ -19,6 +18,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 300px 1fr;
   grid-template-rows: 1fr 5rem;
+  margin: 9rem 0 4rem 0;
   gap: 1rem;
 }
 
@@ -187,6 +187,7 @@ body {
   .tetris {
     grid-template-columns: 1.5fr 1fr;
     grid-template-rows: 1fr 5rem;
+    margin: 11rem 0 4rem 0;
     gap: 0;
   }
 
