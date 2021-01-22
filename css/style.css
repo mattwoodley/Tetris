@@ -49,50 +49,16 @@ body {
 
 .tetris__pauseButton {
   grid-area: 2 / 1;
-  justify-self: right;
-  height: 7rem;
-  width: 14rem;
   font-size: 3rem;
-  margin-right: 2rem;
+  height: 6rem;
+  width: 6rem;
   color: #fff;
+  background-color: transparent;
   cursor: pointer;
-  font-family: 'Russo One', sans-serif;
   text-shadow: 0 4px rgb(0, 0, 0);
-  border: none;
-  border-radius: 0.5rem;
+  border: 1px solid #fff;
+  border-radius: 50%;
   box-shadow: 3px 3px #000;
-}
-
-.tetris__pauseButton--red {
-  background: rgb(0,0,0);
-  background: -moz-linear-gradient(0deg, rgba(0,0,0,1) 19%, rgba(50,0,0,1) 63%, rgba(80,0,0,1) 100%);
-  background: -webkit-linear-gradient(0deg, rgba(0,0,0,1) 19%, rgba(50,0,0,1) 63%, rgba(80,0,0,1) 100%);
-  background: linear-gradient(0deg, rgba(0,0,0,1) 19%, rgba(50,0,0,1) 63%, rgba(80,0,0,1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#500000",GradientType=1); 
-}
-
-.tetris__pauseButton--red:hover {
-  background: rgb(20,0,0);
-  background: -moz-linear-gradient(0deg, rgba(20,0,0,1) 19%, rgba(70,0,0,1) 63%, rgba(100,0,0,1) 100%);
-  background: -webkit-linear-gradient(0deg, rgba(20,0,0,1) 19%, rgba(70,0,0,1) 63%, rgba(100,0,0,1) 100%);
-  background: linear-gradient(0deg, rgba(20,0,0,1) 19%, rgba(70,0,0,1) 63%, rgba(100,0,0,1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#140000",endColorstr="#640000",GradientType=1); 
-}
-
-.tetris__pauseButton--green {
-  background: rgb(0,0,0);
-  background: -moz-linear-gradient(0deg, rgba(0,0,0,1) 19%, rgba(0,50,0,1) 63%, rgba(0,80,0,1) 100%);
-  background: -webkit-linear-gradient(0deg, rgba(0,0,0,1) 19%, rgba(0,50,0,1) 63%, rgba(0,80,0,1) 100%);
-  background: linear-gradient(0deg, rgba(0,0,0,1) 19%, rgba(0,50,0,1) 63%, rgba(0,80,0,1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000000",endColorstr="#005000",GradientType=1); 
-}
-
-.tetris__pauseButton--green:hover {
-  background: rgb(0,20,0);
-  background: -moz-linear-gradient(0deg, rgba(0,20,0,1) 19%, rgba(0,70,0,1) 63%, rgba(0,100,0,1) 100%);
-  background: -webkit-linear-gradient(0deg, rgba(0,20,0,1) 19%, rgba(0,70,0,1) 63%, rgba(0,100,0,1) 100%);
-  background: linear-gradient(0deg, rgba(0,20,0,1) 19%, rgba(0,70,0,1) 63%, rgba(0,100,0,1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#001400",endColorstr="#006400",GradientType=1); 
 }
 
 .tetris__canvas-wrapper {
@@ -298,7 +264,7 @@ body {
     position: absolute;
     height: 44px;
     width: 200px;
-    font-size: 3.5rem;
+    font-size: 3.3rem;
   }
 
   .tetris__replay {

@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const titleScreen = document.querySelector('.tetris__title-screen');
   const borderGrid = document.querySelector('.tetris__grid');
   const pauseButton = document.querySelector('.tetris__pauseButton');
+  // Select the fontAwesome <i> within pauseButton
+  const pauseButtonIcon = pauseButton.children[0];
   const pauseMessage = document.querySelector('.tetris__pauseOverlay');
   const greyBg = document.querySelector('.tetris__grey-bg');
   const gameOverMessage = document.querySelector('.tetris__game-over');
@@ -200,13 +202,11 @@ document.addEventListener('DOMContentLoaded', () => {
       greyBg.classList.toggle('is-hidden');
       pauseMessage.classList.toggle('is-hidden');
       if (pause === true) {
-        pauseButton.classList.remove('tetris__pauseButton--green');
-        pauseButton.classList.add('tetris__pauseButton--red');
-        pauseButton.textContent = 'Pause';
+        pauseButtonIcon.classList.remove('fa-pause');
+        pauseButtonIcon.classList.add('fa-play');
       } else {
-        pauseButton.classList.remove('tetris__pauseButton--red');
-        pauseButton.classList.add('tetris__pauseButton--green');
-        pauseButton.textContent = 'Resume';
+        pauseButtonIcon.classList.remove('fa-play');
+        pauseButtonIcon.classList.add('fa-pause');
       }
       // toggle pause variable
       (pause === false) ? pause = true : pause = false;
