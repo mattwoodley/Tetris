@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const startButton = document.querySelector('.tetris__start');
   const titleScreen = document.querySelector('.tetris__title-screen');
   const borderGrid = document.querySelector('.tetris__grid');
-  const pauseMessage = document.querySelector('.tetris__pause');
+  const pauseButton = document.querySelector('.tetris__pauseButton');
+  const pauseMessage = document.querySelector('.tetris__pauseOverlay');
   const greyBg = document.querySelector('.tetris__grey-bg');
   const gameOverMessage = document.querySelector('.tetris__game-over');
   const replayButton = document.querySelector('.tetris__replay');
@@ -189,6 +190,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     });
+  }
+
+  // pauseGame toggles the pause variable between false and true, which affects whether time pauses or not, and whether the user can move tetris pieces. It brings up an overlay indicating that the game is paused.
+  const pauseGame = () => {
+    if (player.board === null || !gameOverMessage.classList.contains('is-hidden')) {
+      return;
+    } else {
+      greyBg.classList.toggle('is-hidden');
+      pauseMessage.classList.toggle('is-hidden');
+      if (pause === true) {
+        pauseButton.classList.remove('tetris__pauseButton--green');
+        pauseButton.classList.add('tetris__pauseButton--red');
+        pauseButton.textContent = 'Pause';
+      } else {
+        pauseButton.classList.remove('tetris__pauseButton--red');
+        pauseButton.classList.add('tetris__pauseButton--green');
+        pauseButton.textContent = 'Resume';
+      }
+      // toggle pause variable
+      (pause === false) ? pause = true : pause = false;
+    }
   }
 
   // upon tetris piece being placed, placeNewPiece() chooses a new piece at random and places it at the top of the arena.
@@ -407,13 +429,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('keyup', evt => {
     if (evt.code === 'KeyP') {
-      greyBg.classList.toggle('is-hidden');
-      pauseMessage.classList.toggle('is-hidden');
-      // toggle pause element
-      (pause === false) ? pause = true : pause = false;
+      pauseGame();
     }
   });
   
+  pauseButton.addEventListener('click', () => {
+    pauseGame();
+  });
+
   startButton.addEventListener('click', () => {
     startGame()
   });
