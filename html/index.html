@@ -1,55 +1,76 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <title>Tetris</title>
-    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
-    <script src="https://kit.fontawesome.com/60f46e1e01.js" crossorigin="anonymous"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&family=Russo+One&display=swap" rel="stylesheet">
-    <link href="../css/style.css" rel="stylesheet">
-  </head>
-  <body>
-    <div class="tetris">
 
-      <div class="tetris__controls">
-          <h4>Controls</h4>
-          <p>A: Move Left</p>
-          <p>D: Move Right</p>
-          <p>Q: Rotate Left</p>
-          <p>E: Rotate Right</p>
-          <p>S: Drop 1 Space</p>
-          <p>F: Drop To Bottom</p>
-          <p>P: Pause Game</p>
-      </div>
+<head>
+  <title>Tetris</title>
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://kit.fontawesome.com/60f46e1e01.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500&family=Russo+One&display=swap"
+    rel="stylesheet">
+  <link href="../css/style.css" rel="stylesheet">
+</head>
 
-      <button class="tetris__pauseButton"><i class="fas fa-play"></i></button>
+<body>
+  <div class="tetris">
 
-      <div class="tetris__canvas-wrapper">
-        <button class="tetris__start">Start!</button>
-        <h6 class="tetris__pauseOverlay is-hidden">Paused</h6>
-        <img class="tetris__title-screen" src="../img/tetris-title-screen.png"/>
-        <img class="tetris__grey-bg is-hidden"/>
-        <h6 class="tetris__game-over is-hidden">Game Over</h6>
-        <button class="tetris__replay is-hidden">Play Again?</button>
-        <div class="tetris__grid is-hidden"></div>
-        <canvas id="tetris" class="tetris__canvas" width="200" height="400"></canvas>
-      </div>
-    
-      <div class="tetris__stats">
-          <h4 class="tetris__level">Level: 1</h4>
-          <h4 class="tetris__lines">Lines: 0</h4>
-          <h4 class="tetris__score">Score: 0</h4>
-      </div>
-
-      <div class="tetris__code">
-        <a class="a-github" target="_blank" href="https://github.com/mattwoodley/tetris"><h6><i class="fab fa-github"></i> Code</h6></a>
-      </div>
-    
+    <div class="tetris__hold">Hold</div>
+    <div class="tetris__controls is-hidden">
+      <h4 class="controls__title">Controls</h4>
+      <p class="controls__control">Move Left: A</p>
+      <p class="controls__control">Move Right: D</p>
+      <p class="controls__control">Rotate Left: Q</p>
+      <p class="controls__control">Rotate Right: E</p>
+      <p class="controls__control">Drop 1 Space: S</p>
+      <p class="controls__control">Drop To Bottom: F</p>
+      <p class="controls__control">Pause Game: P</p>
     </div>
 
-    <script src="../js/tetris.js"></script>
-  </body>
+    <div class="tetris__btn-belt">
+      <button class="btn-belt__menu-btn btn--round is-hidden"><i class="fas fa-bars"></i></button>
+      <button class="btn-belt__pause-btn btn--round is-hidden"><i class="fas fa-pause"></i></button>
+    </div>
+
+    <div class="tetris__menu">
+      <h6 class="menu__title">Main Menu</h6>
+
+      <div class="menu__code">
+        <a class="a-github btn--round" target="_blank" href="https://github.com/mattwoodley/tetris">
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+
+      <button class="menu__game-mode game-mode--standard">Standard</button>
+      <button class="menu__game-mode game-mode--sandbox">Sandbox</button>
+
+      <button class="menu__controls-btn">Controls</button>
+
+      <button class="menu__start">Start!</button>
+    </div>
+
+    <div class="tetris__canvas-wrapper">
+      <h6 class="tetris__pause-message is-hidden">Paused</h6>
+      <img class="tetris__title-screen" src="../img/tetris-title-screen.png" />
+      <img class="tetris__grey-bg is-hidden" />
+      <h6 class="tetris__game-over is-hidden">Game Over</h6>
+      <button class="tetris__replay is-hidden">Play Again?</button>
+      <div class="tetris__grid is-hidden"></div>
+      <canvas id="tetris" class="tetris__canvas" width="200" height="400"></canvas>
+    </div>
+
+    <div class="tetris__next-piece">Next Piece</div>
+    <div class="tetris__stats">
+      <h4 class="stats__level">Level: 1</h4>
+      <h4 class="stats__lines">Lines: 0</h4>
+      <h4 class="stats__score">Score: 0</h4>
+      <button class="stats__level-down btn--round is-hidden"><i class="fas fa-minus"></i></button>
+      <button class="stats__level-up btn--round is-hidden"><i class="fas fa-plus"></i></button>
+    </div>
+
+  </div>
+
+  <script type="module" src="../js/main.js"></script>
+</body>
+
 </html>
-
-
