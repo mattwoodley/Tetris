@@ -12,6 +12,15 @@ body {
   margin: 0;
 }
 
+.disable-click {
+  pointer-events: none;
+}
+
+.grey-out {
+  color: rgb(65, 65, 65);
+  opacity: 0.5;
+}
+
 .btn--round {
   font-size: 3rem;
   height: 5rem;
