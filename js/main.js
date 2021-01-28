@@ -185,7 +185,8 @@ const mainMenuToggle = () => {
     mainMenu.classList.toggle('is-hidden');
     mainMenuBtnIcon.classList.remove('fa-bars');
     mainMenuBtnIcon.classList.add('fa-times-circle');
-    pauseBtn.classList.add('is-hidden');
+    pauseBtn.classList.add('disable-click');
+    pauseBtnIcon.classList.add('grey-out');
     replayBtn.classList.add('is-hidden');
     game.menu = false;
     if (!game.pause) {
@@ -196,6 +197,8 @@ const mainMenuToggle = () => {
     mainMenuBtnIcon.classList.add('fa-bars');
     mainMenuBtnIcon.classList.remove('fa-times-circle');
     pauseBtn.classList.remove('is-hidden');
+    pauseBtn.classList.remove('disable-click');
+    pauseBtnIcon.classList.remove('grey-out');
     game.menu = true;
   }
 }
