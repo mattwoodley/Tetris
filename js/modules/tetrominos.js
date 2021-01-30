@@ -1,24 +1,22 @@
-const pieces = 'IJLOSTZ';
-
 const createTetromino = (type) => {
   if (type === 'I') {
     return [
-      [0, 1, 0, 0],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0],
-      [0, 1, 0, 0]
+      [0, 0, 0, 0],
+      [1, 1, 1, 1],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0]
     ]
   } else if (type === 'J') {
     return [
-      [0, 2, 0],
-      [0, 2, 0],
-      [2, 2, 0]
+      [2, 0, 0],
+      [2, 2, 2],
+      [0, 0, 0]
     ]
   } else if (type === 'L') {
     return [
-      [0, 3, 0],
-      [0, 3, 0],
-      [0, 3, 3]
+      [0, 0, 3],
+      [3, 3, 3],
+      [0, 0, 0]
     ]
   } else if (type === 'O') {
     return [
@@ -33,9 +31,9 @@ const createTetromino = (type) => {
     ]
   } else if (type === 'T') {
     return [
-      [0, 0, 0],
-      [6, 6, 6],
       [0, 6, 0],
+      [6, 6, 6],
+      [0, 0, 0],
     ]
   } else if (type === 'Z') {
     return [
@@ -58,4 +56,4 @@ const tetrominoColors = [
   '#FF0000'
 ]
 
-export { pieces, createTetromino, tetrominoColors };
+export { createTetromino, tetrominoColors };
