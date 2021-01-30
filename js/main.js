@@ -30,8 +30,7 @@ const game = {
   playing: false,
   pause: false,
   menu: true,
-  arena: null,
-  board: null,
+  playfield: [],
   dropInterval: 1000
 }
 
@@ -42,11 +41,13 @@ const player = {
   score: 0
 }
 
+// keep track of the animation frame so we can cancel it
+let rAF = null;
 let dropCounter = 0;
 let lastTime = 0;
 
 // getContext allows us to use methods and access properties in JavaScript.
-// Increase size of the context within the canvas (the tetris pieces)
+// Increase size of the context within the canvas (the tetrominos)
 context.scale(20, 20);
 
 // FUNCTIONS
@@ -56,18 +57,18 @@ const between = (score, min, max) => {
   return score >= min && score <= max;
 }
 
-// When tetris pieces form a horizontal line, clear said line and add points
+// When tetrominos form a horizontal line, clear said line and add points
 const lineClear = () => {
   let lines = 1;
-  outer: for (let y = game.arena.length - 1; y > 0; y--) {
-    for (let x = 0; x < game.arena[y].length; x++) {
-      if (game.arena[y][x] === 0) {
+  outer: for (let y = game.playfield.length - 1; y > 0; y--) {
+    for (let x = 0; x < game.playfield[y].length; x++) {
+      if (game.playfield[y][x] === 0) {
         continue outer;
       }
     }
     // remove the completed line
-    const row = game.arena.splice(y, 1)[0].fill(0);
-    game.arena.unshift(row);
+    const row = game.playfield.splice(y, 1)[0].fill(0);
+    game.playfield.unshift(row);
     y++;
 
     player.score += lines * 10;
@@ -84,12 +85,12 @@ const lineClear = () => {
 }
 
 const collision = (arena, player) => {
-  const [board, offset] = [game.board, player.pos];
-  for (let y = 0; y < board.length; y++) {
-    for (let x = 0; x < board[y].length; x++) {
-      if (board[y][x] != 0 && // if player position is not 0,0 then the player has moved and might collide
-        (arena[y + offset.y] && // if arena row doesn't exist then potential collision
-          arena[y + offset.y][x + offset.x]) !== 0) { // if arena row and column don't exist and aren't 0, then must collide
+  const [tetromino, playerPos] = [game.tetromino, player.pos];
+  for (let y = 0; y < tetromino.length; y++) {
+    for (let x = 0; x < tetromino[y].length; x++) {
+      if (tetromino[y][x] != 0 && ( // if player position is not 0,0 then the player has moved and might collide
+        arena[y + playerPos.y] && // if arena row doesn't exist then potential collision
+        arena[y + playerPos.y][x + playerPos.x]) !== 0) { // if arena row and column don't exist and aren't 0, then must collide
         // return true if collision found.
         return true;
       }
@@ -99,25 +100,31 @@ const collision = (arena, player) => {
   return false;
 }
 
-const createBoard = (width, height) => {
-  const board = [];
-  while (height--) {
-    board.push(new Array(width).fill(0))
+// keep track of what is in every cell of the game using a 2d array
+// tetris playfield is 10x20, with 2 rows offscreen
+// populate the empty state
+const createBoard = () => {
+  for (let row = -2; row < 20; row++) {
+    game.playfield[row] = [];
+
+    for (let col = 0; col < 10; col++) {
+      game.playfield[row][col] = 0;
+    }
   }
-  return board;
+  return game.playfield;
 }
 
 const draw = () => {
-  context.fillStyle = '#cffffb';
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.clearRect(0, 0, canvas.width, canvas.height);
 
-  drawBoard(game.arena, { x: 0, y: 0 });
-  drawBoard(game.board, player.pos);
+  drawPlayfield(game.playfield, { x: 0, y: 0 });
+  drawPlayfield(game.tetromino, player.pos);
 }
 
-const drawBoard = (board, offset) => {
-  board.forEach((row, y) => {
+const drawPlayfield = (playfield, offset) => {
+  playfield.forEach((row, y) => {
     row.forEach((value, x) => {
+      // Ignore any 0s in arrays and use value to add color to the tetromino
       if (value !== 0) {
         context.strokeStyle = '#000'
         context.lineWidth = 0.1;
@@ -140,17 +147,18 @@ const drawBoard = (board, offset) => {
 }
 
 // if placeNewPiece() triggers a collision() then the game is over.
-// gameOver stops the board from drawing and displays the gameOverMessage and replayBtn
+// gameOver stops the playfield from drawing and displays the gameOverMessage and replayBtn
 const gameOver = () => {
+  cancelAnimationFrame(rAF);
   game.playing = false;
   gameOverMessage.classList.remove('is-hidden');
   replayBtn.classList.remove('is-hidden');
   greyBg.classList.remove('is-hidden');
 }
 
-// this function merges the player's position into the game.arena's empty table of arrays - so all of the game.arena's arrays of 0s will have tetrimino pieces of 1s, 2s, 3s etc.
+// this function merges the player's position into the game.playfield's empty table of arrays - so all of the game.playfield's arrays of 0s will have tetrimino tetrominos of 1s, 2s, 3s etc.
 const merge = (arena, player) => {
-  game.board.forEach((row, y) => {
+  game.tetromino.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0) {
         arena[y + player.pos.y][x + player.pos.x] = value;
@@ -159,7 +167,7 @@ const merge = (arena, player) => {
   });
 }
 
-// pauseGame toggles the pause variable between false and true, which affects whether time pauses or not, and whether the user can move tetris pieces. It brings up an overlay indicating that the game is paused.
+// pauseGame toggles the pause variable between false and true, which affects whether time pauses or not, and whether the user can move tetrominos. It brings up an overlay indicating that the game is paused.
 const pauseGame = () => {
   if (game.playing) {
     greyBg.classList.toggle('is-hidden');
@@ -203,29 +211,33 @@ const mainMenuToggle = () => {
   }
 }
 
-// upon tetris piece being placed, placeNewPiece() chooses a new piece at random and places it at the top of the game.arena.
+// upon tetromino being placed, placeNewPiece() chooses a new tetromino at random and places it at the top of the game.playfield.
 const placeNewPiece = () => {
   if (game.playing) {
-    const pieces = 'IJLOSTZ';
-    game.board = createTetromino(pieces[Math.floor(Math.random() * Math.floor(pieces.length))]);
-    player.pos.y = 0;
-    player.pos.x = (Math.floor(game.arena[0].length / 2)) - (Math.floor(game.board[0].length / 2));
+    const tetrominos = 'IJLOSTZ';
+    game.tetromino = createTetromino(tetrominos[Math.floor(Math.random() * Math.floor(tetrominos.length))]);
 
-    // if collision during placeNewPiece() then the game is over, the game.arena is cleared of tetris pieces and the player's stats are reset.
-    if (collision(game.arena, player)) {
+    // position the tetromino just above the playfield 
+    player.pos.y = -2;
+
+    // position game.tetromino into the middle of the arena.
+    player.pos.x = (Math.floor(game.playfield[0].length / 2)) - (Math.floor(game.tetromino[0].length / 2));
+
+    // if collision during placeNewPiece() then the game is over, the game.playfield is cleared of tetrominos and the player's stats are reset.
+    if (collision(game.playfield, player)) {
       gameOver();
     }
   } else {
-    console.error("An error has occurred and the game cannot place a new piece as a game isn't being played.");
+    console.error("An error has occurred and the game cannot place a new tetromino as a game isn't being played.");
   }
 }
 
 // playerDrop is the function for moving a player down 1 space.
 const playerDrop = () => {
   player.pos.y++;
-  if (collision(game.arena, player)) {
+  if (collision(game.playfield, player)) {
     player.pos.y--;
-    merge(game.arena, player);
+    merge(game.playfield, player);
     placeNewPiece();
     lineClear();
     if (game.mode === 'Standard') {
@@ -238,11 +250,11 @@ const playerDrop = () => {
 }
 
 const playerDropAll = () => {
-  while (!collision(game.arena, player)) {
+  while (!collision(game.playfield, player)) {
     player.pos.y++;
   }
   player.pos.y--;
-  merge(game.arena, player);
+  merge(game.playfield, player);
   placeNewPiece();
   lineClear();
   if (game.mode === 'Standard') {
@@ -255,24 +267,24 @@ const playerDropAll = () => {
 
 const playerMove = (dir) => {
   player.pos.x += dir;
-  if (collision(game.arena, player)) {
+  if (collision(game.playfield, player)) {
     player.pos.x -= dir;
   }
 }
 
-// rotate tetris piece depending on direction chosen. Collision() prevents tetris pieces from rotating into other pieces or outside of game.arena.
+// rotate tetromino depending on direction chosen. Collision() prevents tetrominos from rotating into other tetrominos or outside of game.playfield.
 const playerRotate = (dir) => {
   const pos = player.pos.x; // Store player's X position before rotation.
   let offset = 1;
-  rotate(game.board, dir); // Perform the piece rotation.
+  rotate(game.tetromino, dir); // Perform the tetromino rotation.
 
   // If there is a collision immediately after rotating then the rotation is illegal.
-  // But allow rotation if the piece can fit when moved out from the wall.
-  while (collision(game.arena, player)) {
+  // But allow rotation if the tetromino can fit when moved out from the wall.
+  while (collision(game.playfield, player)) {
     player.pos.x += offset;
-    offset = -(offset + (offset > 0 ? 1 : -1)); // Produces 1, -2, 3, -4, 5 etc. to move the piece back away from the wall
-    if (offset > game.board[0].length) { // If we have tried to offset more than the piece width, the rotation is unsuccessful.
-      rotate(game.board, -dir); // Reset rotation.
+    offset = -(offset + (offset > 0 ? 1 : -1)); // Produces 1, -2, 3, -4, 5 etc. to move the tetromino back away from the wall
+    if (offset > game.tetromino[0].length) { // If we have tried to offset more than the tetromino width, the rotation is unsuccessful.
+      rotate(game.tetromino, -dir); // Reset rotation.
       player.pos.x = pos; // Reset position.
       return;
     }
@@ -280,19 +292,14 @@ const playerRotate = (dir) => {
 }
 
 const newGame = () => {
+  game.playfield = createBoard();
   game.playing = true;
   gameOverMessage.classList.add('is-hidden');
   replayBtn.classList.add('is-hidden');
   greyBg.classList.add('is-hidden');
-
-  // Clear the game.arena of tetris pieces
-  if (game.board) {
-    game.arena.forEach(row => row.fill(0));
-    resetStats();
-    placeNewPiece();
-    draw();
-    requestAnimationFrame(update);
-  }
+  resetStats();
+  placeNewPiece();
+  rAF = requestAnimationFrame(update);
 }
 
 // Reset player stats
@@ -308,22 +315,22 @@ const resetStats = () => {
 }
 
 // rotation by transposing and then reversing.
-const rotate = (board, dir) => {
-  for (let y = 0; y < board.length; y++) {
+const rotate = (playfield, dir) => {
+  for (let y = 0; y < playfield.length; y++) {
     for (let x = 0; x < y; x++) {
       [
-        board[x][y],
-        board[y][x],
+        playfield[x][y],
+        playfield[y][x],
       ] = [
-          board[y][x],
-          board[x][y],
+          playfield[y][x],
+          playfield[x][y],
         ];
     }
   }
   if (dir > 0) {
-    board.forEach(row => row.reverse());
+    playfield.forEach(row => row.reverse());
   } else {
-    board.reverse();
+    playfield.reverse();
   }
 }
 
@@ -353,7 +360,7 @@ const setGameMode = (gameMode) => {
 }
 
 const startGame = () => {
-  game.arena = createBoard(10, 20);
+  game.playfield = createBoard();
   game.playing = true;
   mainMenu.classList.add('is-hidden');
   startBtn.classList.add('is-hidden');
@@ -383,7 +390,7 @@ const update = (time = 0) => {
     }
 
     draw();
-    requestAnimationFrame(update);
+    rAF = requestAnimationFrame(update);
   }
 }
 
@@ -435,7 +442,7 @@ const levelStandard = (score, level) => {
 
 // EVENT LISTENERS
 
-// key presses down result in moving or rotating tetris piece.
+// key presses down result in moving or rotating tetromino.
 document.addEventListener('keydown', evt => {
   if (game.playing && game.pause === false) {
     if (evt.code === 'KeyQ') {
@@ -452,7 +459,7 @@ document.addEventListener('keydown', evt => {
   }
 });
 
-// Press F to drop tetromino to the bottom of the board.
+// Press F to drop tetromino to the bottom of the playfield.
 document.addEventListener('keyup', evt => {
   if (game.playing && game.pause === false) {
     if (evt.code === 'KeyF') {
