@@ -1,3 +1,4 @@
+.gitignore
 node_modules
 notes.txt
 *.psd
