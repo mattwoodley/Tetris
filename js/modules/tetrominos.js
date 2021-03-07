@@ -44,7 +44,7 @@ const createTetromino = (type) => {
   }
 }
 
-// colors: cyan, blue, orange, yellow, green, pink, red
+// colors: I (cyan), J (blue), L (orange), O (yellow), S (green), T (pink), Z (red)
 const tetrominoColors = [
   null,
   '#00FFFF',
