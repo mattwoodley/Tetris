@@ -22,6 +22,7 @@ const mainMenuBtnIcon = mainMenuBtn.children[0];
 const mainMenu = document.querySelector('.tetris__menu');
 const controlsBtn = document.querySelector('.menu__controls-btn');
 const controls = document.querySelector('.tetris__controls');
+const nextTetromino = document.querySelectorAll('.next-tetromino__tetromino');
 
 // dropInterval determines how quickly the tetromino drops (1000ms = 1 second).
 // 2 game modes - standard and sandbox. Standard offers level progression based on score. Sandbox allows user to increase and decrease the speed of the dropInterval. Default game mode is standard.
@@ -31,7 +32,11 @@ const game = {
   pause: false,
   menu: true,
   playfield: [],
-  dropInterval: 1000
+  dropInterval: 1000,
+  tetromino: null,
+  tetrominos: 'IJLOSTZ',
+  nextTetromino: [],
+  nextTetrominoImg: []
 }
 
 const player = {
@@ -146,7 +151,7 @@ const drawPlayfield = (playfield, offset) => {
   });
 }
 
-// if placeNewPiece() triggers a collision() then the game is over.
+// if placeNewTetromino() triggers a collision() then the game is over.
 // gameOver stops the playfield from drawing and displays the gameOverMessage and replayBtn
 const gameOver = () => {
   cancelAnimationFrame(rAF);
@@ -156,7 +161,7 @@ const gameOver = () => {
   greyBg.classList.remove('is-hidden');
 }
 
-// this function merges the player's position into the game.playfield's empty table of arrays - so all of the game.playfield's arrays of 0s will have tetrimino tetrominos of 1s, 2s, 3s etc.
+// this function merges the player's position into the game.playfield's empty table of arrays - so all of the game.playfield's arrays of 0s will have tetromino tetrominos of 1s, 2s, 3s etc.
 const merge = (arena, player) => {
   game.tetromino.forEach((row, y) => {
     row.forEach((value, x) => {
@@ -211,19 +216,63 @@ const mainMenuToggle = () => {
   }
 }
 
-// upon tetromino being placed, placeNewPiece() chooses a new tetromino at random and places it at the top of the game.playfield.
-const placeNewPiece = () => {
-  if (game.playing) {
-    const tetrominos = 'IJLOSTZ';
-    game.tetromino = createTetromino(tetrominos[Math.floor(Math.random() * Math.floor(tetrominos.length))]);
+const nextTetrominoImg = () => {
+  game.nextTetrominoImg.forEach((tetromino, i) => {
+      if (tetromino === 'I') { nextTetromino[i].src = "../img/tetromino-I.png" }
+      else if (tetromino === 'J') { nextTetromino[i].src = "../img/tetromino-J.png" }
+      else if (tetromino === 'L') { nextTetromino[i].src = "../img/tetromino-L.png" }
+      else if (tetromino === 'O') { nextTetromino[i].src = "../img/tetromino-O.png" }
+      else if (tetromino === 'S') { nextTetromino[i].src = "../img/tetromino-S.png" }
+      else if (tetromino === 'T') { nextTetromino[i].src = "../img/tetromino-T.png" }
+      else if (tetromino === 'Z') { nextTetromino[i].src = "../img/tetromino-Z.png" }
+  });
+}
 
+const nextTetrominos = () => {
+  let type = null;
+
+  // When the game starts, create 4 tetrominos, place 1 onto the board and store 3 into nextTetromino array.
+  if (game.nextTetromino.length === 0 && game.nextTetrominoImg.length === 0) {
+    game.nextTetromino.push(createTetromino(game.tetrominos[Math.floor(Math.random() * Math.floor(game.tetrominos.length))]));
+
+    for (let i=0; i < 3; i++) {
+      type = game.tetrominos[Math.floor(Math.random() * Math.floor(game.tetrominos.length))];
+      game.nextTetrominoImg.push(type);
+      game.nextTetromino.push(createTetromino(type));
+      nextTetrominoImg();
+    }
+  }
+  
+  // This fires any time a tetromino is placed.
+  // When this tetromino is placed, its corrosponding img is removed from nextTetrominoImg array.
+  // Then a new tetromino is created and added to the end of nextTetromino array, as well as its img being added to the end of nextTetrominoImg array.
+  if (game.nextTetromino.length > 0 && game.nextTetromino.length < 4) {
+    game.nextTetrominoImg.shift()
+    type = game.tetrominos[Math.floor(Math.random() * Math.floor(game.tetrominos.length))];
+    game.nextTetromino.push(createTetromino(type));
+    game.nextTetrominoImg.push(type);
+
+    // Set the images
+    for (let i=0; i < 3; i++) {
+      nextTetrominoImg();
+    }
+  }
+
+  // Set the tetromino that is placed on the board by taking it from the beginning of the nextTetromino array.
+  game.tetromino = game.nextTetromino.shift();
+}
+
+// upon tetromino being placed, placeNewTetromino() chooses a new tetromino at random and places it at the top of the game.playfield.
+const placeNewTetromino = () => {
+  if (game.playing) {
+    nextTetrominos();
     // position the tetromino just above the playfield 
     player.pos.y = -2;
 
     // position game.tetromino into the middle of the arena.
     player.pos.x = (Math.floor(game.playfield[0].length / 2)) - (Math.floor(game.tetromino[0].length / 2));
 
-    // if collision during placeNewPiece() then the game is over, the game.playfield is cleared of tetrominos and the player's stats are reset.
+    // if collision during placeNewTetromino() then the game is over, the game.playfield is cleared of tetrominos and the player's stats are reset.
     if (collision(game.playfield, player)) {
       gameOver();
     }
@@ -238,7 +287,7 @@ const playerDrop = () => {
   if (collision(game.playfield, player)) {
     player.pos.y--;
     merge(game.playfield, player);
-    placeNewPiece();
+    placeNewTetromino();
     lineClear();
     if (game.mode === 'Standard') {
       updateStat('level', player.level);
@@ -255,7 +304,7 @@ const playerDropAll = () => {
   }
   player.pos.y--;
   merge(game.playfield, player);
-  placeNewPiece();
+  placeNewTetromino();
   lineClear();
   if (game.mode === 'Standard') {
     updateStat('level', player.level);
@@ -298,7 +347,7 @@ const newGame = () => {
   replayBtn.classList.add('is-hidden');
   greyBg.classList.add('is-hidden');
   resetStats();
-  placeNewPiece();
+  placeNewTetromino();
   rAF = requestAnimationFrame(update);
 }
 
@@ -368,7 +417,7 @@ const startGame = () => {
   pauseBtn.classList.remove('is-hidden');
   borderGrid.classList.remove('is-hidden');
   mainMenuBtn.classList.remove('is-hidden');
-  placeNewPiece();
+  placeNewTetromino();
   update();
 }
 
