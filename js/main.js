@@ -5,7 +5,7 @@ const canvas = document.querySelector('#tetris');
 const context = canvas.getContext('2d');
 const gameModeStandard = document.querySelector('.game-mode--standard');
 const gameModeSandbox = document.querySelector('.game-mode--sandbox');
-const startBtn = document.querySelector('.menu__start');
+const startBtn = document.querySelector('.menu__start-btn');
 const titleScreen = document.querySelector('.tetris__title-screen');
 const borderGrid = document.querySelector('.tetris__grid');
 const pauseBtn = document.querySelector('.btn-belt__pause-btn');
@@ -20,6 +20,7 @@ const replayBtn = document.querySelector('.tetris__replay');
 const mainMenuWrapper = document.querySelector('.tetris__menu');
 const mainMenuBtn = document.querySelector('.btn-belt__menu-btn');
 const mainMenuBtnIcon = mainMenuBtn.children[0];
+const newGameBtn = document.querySelector('.menu__new-game-btn');
 const controlsWrapper = document.querySelector('.tetris__controls');
 const controlsBtn = document.querySelector('.menu__controls-btn');
 const nextTetrominoWrapper = document.querySelector('.tetris__next-tetromino');
@@ -33,6 +34,7 @@ const holdImg = document.querySelector('.hold__img');
 const game = {
   mode: "Standard",
   playing: false,
+  over: false,
   pause: false,
   menu: true,
   playfield: [],
@@ -69,6 +71,18 @@ context.scale(20, 20);
 // helper function.
 const between = (score, min, max) => {
   return score >= min && score <= max;
+}
+
+const addClasses = (arr, cls) => {
+  arr.forEach(elm => {
+    elm.classList.add(cls);
+  });
+}
+
+const removeClasses = (arr, cls) => {
+  arr.forEach(elm => {
+    elm.classList.remove(cls);
+  });
 }
 
 // When tetrominos form a horizontal line, clear said line and add points
@@ -164,10 +178,11 @@ const drawPlayfield = (playfield, offset) => {
 // gameOver stops the playfield from drawing and displays the gameOverMessage and replayBtn
 const gameOver = () => {
   cancelAnimationFrame(rAF);
+  game.over = true;
   game.playing = false;
-  gameOverMessage.classList.remove('is-hidden');
-  replayBtn.classList.remove('is-hidden');
-  greyBg.classList.remove('is-hidden');
+  pauseBtn.classList.add('disable-click');
+  pauseBtnIcon.classList.add('grey-out');
+  removeClasses([gameOverMessage, replayBtn, greyBg], 'is-hidden');
 }
 
 // this function merges the player's position into the game.playfield's empty table of arrays - so all of the game.playfield's arrays of 0s will have tetromino tetrominos of 1s, 2s, 3s etc.
@@ -182,27 +197,26 @@ const merge = (arena, player) => {
 }
 
 // This function is triggered by a player action.
-// If holdStatus is false then it moves game.tetromino to game.holdTetromino and sets holdStatus to true.
-// If holdStatus is true then it moves game.holdTetromino to game.tetromino and sets holdStatus to false.
+// holdStatus is only false before hold() is first called. It moves game.tetromino to game.holdTetromino and sets holdStatus to true.
+// Thereafter, holdStatus is true and it creates newHoldTetromino from game.tetromino, then moves game.holdTetromino to be game.tetromino and sets it to the top of the board.
 const hold = () => {
+  // holdCount increases each time hold() is called, but is reset to 0 in placeNewTetromino().
   game.holdCount += 1;
   if (game.playing) {
+    // tetromino must be near the top of the board to successfully hold and hold cannot be called more than once in the same possession.
     if (player.pos.y < 2 && game.holdCount < 2) {
       if (game.holdStatus) {
-        let holdTetromino = game.tetromino;
+        let newHoldTetromino = game.tetromino;
         game.tetromino = game.holdTetromino;
-        game.holdTetromino = holdTetromino;
-        
-        setHoldImg(game.tetrominoImg);
-        
-        player.pos.y = -2;
+        game.holdTetromino = newHoldTetromino;
+                setHoldImg(game.tetrominoImg);
+                player.pos.y = -2;
         player.pos.x = (Math.floor(game.playfield[0].length / 2)) - (Math.floor(game.tetromino[0].length / 2));
       } else {
         game.holdStatus = true;
         game.holdTetromino = game.tetromino;
         
         setHoldImg(game.tetrominoImg);
-        
         placeNewTetromino();
       }
     }
@@ -217,6 +231,19 @@ const setHoldImg = (tetromino) => {
   else if (tetromino === 'S') { game.holdImg = tetromino; holdImg.src = "../img/tetromino-S.png" }
   else if (tetromino === 'T') { game.holdImg = tetromino; holdImg.src = "../img/tetromino-T.png" }
   else if (tetromino === 'Z') { game.holdImg = tetromino; holdImg.src = "../img/tetromino-Z.png" }
+  else { holdImg.src = ""}
+}
+
+const setNextTetrominoImg = () => {
+  game.nextTetrominoImg.forEach((tetromino, i) => {
+      if (tetromino === 'I') { nextTetrominoImg[i].src = "../img/tetromino-I.png" }
+      else if (tetromino === 'J') { nextTetrominoImg[i].src = "../img/tetromino-J.png" }
+      else if (tetromino === 'L') { nextTetrominoImg[i].src = "../img/tetromino-L.png" }
+      else if (tetromino === 'O') { nextTetrominoImg[i].src = "../img/tetromino-O.png" }
+      else if (tetromino === 'S') { nextTetrominoImg[i].src = "../img/tetromino-S.png" }
+      else if (tetromino === 'T') { nextTetrominoImg[i].src = "../img/tetromino-T.png" }
+      else if (tetromino === 'Z') { nextTetrominoImg[i].src = "../img/tetromino-Z.png" }
+  });
 }
 
 // pauseGame toggles the pause variable between false and true, which affects whether time pauses or not, and whether the player can move tetrominos. It brings up an overlay indicating that the game is paused.
@@ -244,10 +271,10 @@ const mainMenuToggle = () => {
   if (game.menu) {
     mainMenuWrapper.classList.toggle('is-hidden');
     mainMenuBtnIcon.classList.remove('fa-bars');
+    newGameBtn.classList.remove('is-hidden');
     mainMenuBtnIcon.classList.add('fa-times-circle');
     pauseBtn.classList.add('disable-click');
     pauseBtnIcon.classList.add('grey-out');
-    replayBtn.classList.add('is-hidden');
     game.menu = false;
     if (!game.pause) {
       pauseGame();
@@ -256,23 +283,14 @@ const mainMenuToggle = () => {
     mainMenuWrapper.classList.toggle('is-hidden');
     mainMenuBtnIcon.classList.add('fa-bars');
     mainMenuBtnIcon.classList.remove('fa-times-circle');
-    pauseBtn.classList.remove('is-hidden');
-    pauseBtn.classList.remove('disable-click');
+    pauseBtn.classList.remove('is-hidden', 'disable-click');
     pauseBtnIcon.classList.remove('grey-out');
     game.menu = true;
   }
-}
-
-const setNextTetrominoImg = () => {
-  game.nextTetrominoImg.forEach((tetromino, i) => {
-      if (tetromino === 'I') { nextTetrominoImg[i].src = "../img/tetromino-I.png" }
-      else if (tetromino === 'J') { nextTetrominoImg[i].src = "../img/tetromino-J.png" }
-      else if (tetromino === 'L') { nextTetrominoImg[i].src = "../img/tetromino-L.png" }
-      else if (tetromino === 'O') { nextTetrominoImg[i].src = "../img/tetromino-O.png" }
-      else if (tetromino === 'S') { nextTetrominoImg[i].src = "../img/tetromino-S.png" }
-      else if (tetromino === 'T') { nextTetrominoImg[i].src = "../img/tetromino-T.png" }
-      else if (tetromino === 'Z') { nextTetrominoImg[i].src = "../img/tetromino-Z.png" }
-  });
+  if (game.over) {
+    pauseBtn.classList.add('disable-click');
+    pauseBtnIcon.classList.add('grey-out');
+  }
 }
 
 const nextTetromino = () => {
@@ -395,15 +413,47 @@ const playerRotate = (dir) => {
   }
 }
 
-const newGame = () => {
-  game.playfield = createBoard();
-  game.playing = true;
-  gameOverMessage.classList.add('is-hidden');
-  replayBtn.classList.add('is-hidden');
-  greyBg.classList.add('is-hidden');
-  resetStats();
-  placeNewTetromino();
-  rAF = requestAnimationFrame(update);
+const newGame = (type) => {
+  switch (type) {
+    case 'start':
+      addClasses([mainMenuWrapper, startBtn, titleScreen], 'is-hidden');
+      removeClasses([pauseBtn, borderGrid, mainMenuBtn, holdWrapper, controlsWrapper, nextTetrominoWrapper, tetrisStats], 'is-hidden');
+      game.playfield = createBoard();
+      game.playing = true;
+      placeNewTetromino();
+      update();
+      break;
+    case 'new':
+      game.playfield = createBoard();
+      game.playing = true;
+      mainMenuToggle();
+      pauseGame();
+      resetHold();
+      resetStats();
+      placeNewTetromino();
+      rAF = requestAnimationFrame(update);
+      break;
+    case 'replay':
+      addClasses([gameOverMessage, replayBtn, greyBg], 'is-hidden');
+      pauseBtn.classList.remove('disable-click');
+      pauseBtnIcon.classList.remove('grey-out');
+      game.playfield = createBoard();
+      game.playing = true;
+      resetHold();
+      resetStats();
+      placeNewTetromino();
+      rAF = requestAnimationFrame(update);
+      break;
+    default: console.log(`Sorry, we are out of ${type}.`);
+  }
+}
+
+const resetHold = () => {
+  game.holdTetromino = null,
+  game.holdImg = null,
+  game.holdStatus = false,
+  game.holdCount = 0
+  setHoldImg();
 }
 
 // Reset player stats
@@ -445,7 +495,7 @@ const setGameMode = (gameMode) => {
     levelUpBtn.classList.add('is-hidden');
 
     if (game.playing) {
-      newGame();
+      newGame('replay');
       greyBg.classList.remove('is-hidden');
     }
   } else if (gameMode === 'Sandbox') {
@@ -455,29 +505,12 @@ const setGameMode = (gameMode) => {
     if (game.playing) {
       player.level = 1;
       updateStat('level', player.level);
-      newGame();
+      newGame('replay');
       greyBg.classList.remove('is-hidden');
     }
   } else {
     console.error('Game Mode not selected');
   }
-}
-
-const startGame = () => {
-  game.playfield = createBoard();
-  game.playing = true;
-  mainMenuWrapper.classList.add('is-hidden');
-  startBtn.classList.add('is-hidden');
-  titleScreen.classList.add('is-hidden');
-  pauseBtn.classList.remove('is-hidden');
-  borderGrid.classList.remove('is-hidden');
-  mainMenuBtn.classList.remove('is-hidden');
-  holdWrapper.classList.remove('is-hidden');
-  controlsWrapper.classList.remove('is-hidden');
-  nextTetrominoWrapper.classList.remove('is-hidden');
-  tetrisStats.classList.remove('is-hidden');
-  placeNewTetromino();
-  update();
 }
 
 const updateStat = (cssClass, stat) => {
@@ -577,14 +610,16 @@ document.addEventListener('keyup', evt => {
 });
 
 document.addEventListener('keyup', evt => {
-  if (evt.code === 'KeyP') {
+  if (evt.code === 'KeyP' && !pauseBtn.classList.contains('disable-click')) {
     pauseGame();
   }
 });
 
 document.addEventListener('keyup', evt => {
-  if (evt.code === 'Space') {
-    hold();
+  if (game.playing && !game.pause) {
+    if (evt.code === 'Space') {
+      hold();
+    }
   }
 })
 
@@ -617,9 +652,13 @@ pauseBtn.addEventListener('click', () => {
 });
 
 replayBtn.addEventListener('click', () => {
-  newGame();
+  newGame('replay');
+});
+
+newGameBtn.addEventListener('click', () => {
+  newGame('new');
 });
 
 startBtn.addEventListener('click', () => {
-  startGame()
+  newGame('start')
 });
